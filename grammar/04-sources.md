@@ -55,3 +55,65 @@ Notes and open points:
 - `trnoise`, `trrandom`, `external` and the RF port form are
   `dialect:ngspice` extensions and are not yet specified.
 - For analyses before `.tran`, the source value is the time-zero value.
+
+## Examples (non-normative)
+
+Examples illustrate the rules above and are **not normative**: where an
+example and the rule text disagree, the rule text is the specification and
+the example is a bug to investigate. Examples run as doctests on ngspice
+(`tools/doctest.py`; see [doctests.md](doctests.md)). All are original.
+
+
+PULSE(v1 v2 td tr tf pw per): at 3 us the pulse is high.
+
+```spice-test id=SRC-PULSE-1 covers=pulse,source-function
+V1 a 0 pulse(0 1 0 1n 1n 5u 10u)
+R1 a 0 1k
+.tran 100n 3u
+* expect: v(a) = 1
+```
+
+SIN(vo va freq): at a quarter period the value is the amplitude.
+
+```spice-test id=SRC-SIN-1 covers=sin
+V1 a 0 sin(0 1 1k)
+R1 a 0 1k
+.tran 1u 250u
+* expect: v(a) = 1 tol=1e-3
+```
+
+EXP(v1 v2 td1 tau1 td2 tau2): rising for 5 time constants, 1-exp(-5).
+
+```spice-test id=SRC-EXP-1 covers=exp
+V1 a 0 exp(0 1 0 1m 10 1m)
+R1 a 0 1k
+.tran 10u 5m
+* expect: v(a) = 0.993262 tol=1e-3
+```
+
+Piece-wise linear: rises 0 to 2 V in 1 ms.
+
+```spice-test id=SRC-PWL-1 covers=pwl
+V1 a 0 pwl(0 0 1m 2)
+R1 a 0 1k
+.tran 10u 1m
+* expect: v(a) = 2 tol=1e-3
+```
+
+SFFM with modulation index 0 is a plain sine at the carrier frequency.
+
+```spice-test id=SRC-SFFM-1 covers=sffm dialect=ngspice
+V1 a 0 sffm(0 1 1k 0 100)
+R1 a 0 1k
+.tran 1u 250u
+* expect: v(a) = 1 tol=1e-3
+```
+
+AM(va vo mf fc td phases): at 0.25 us the carrier is at its peak and the envelope is 0.05*(2+sin(2*pi*1k*0.25u)).
+
+```spice-test id=SRC-AM-1 covers=am dialect=ngspice
+V1 a 0 am(0.05 2 1k 1meg 0 0)
+R1 a 0 1k
+.tran 5n 250n
+* expect: v(a) = 0.1000079 tol=1e-3
+```

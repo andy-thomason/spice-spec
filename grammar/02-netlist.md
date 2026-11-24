@@ -123,3 +123,122 @@ An element card begins with a letter that selects its form, see
 03-elements.md. A card beginning with `.` is a dot card. Any other first
 character is an error, except the characters rewritten to `*` by pass 1
 step P4.
+
+## Examples (non-normative)
+
+Examples illustrate the rules above and are **not normative**: where an
+example and the rule text disagree, the rule text is the specification and
+the example is a bug to investigate. Examples run as doctests on ngspice
+(`tools/doctest.py`; see [doctests.md](doctests.md)). All are original.
+
+
+
+```spice-file name=inc.cir
+R1 a 0 1k
+```
+
+```spice-file name=lib.lib
+* library file with one section
+.lib mylib
+R1 a 0 2k
+.endl mylib
+```
+
+A complete deck: title line, cards, and `.end`.
+
+```spice-test id=NET-DECK-1 covers=deck,title-line,end-line,card deck=full
+This line is the title and may say anything
+* a comment line
+V1 a 0 1
+R1 a 0 1k
+.end
+```
+
+A divider as a subcircuit. `0` is global, so the subcircuit has two ports.
+
+```spice-test id=NET-SUB-1 covers=subckt-def,subckt-call
+.subckt half in out
+R1 in out 1k
+R2 out 0 1k
+.ends half
+V1 a 0 4
+X1 a b half
+* expect: v(b) = 2
+```
+
+A diode model; `.model name type (params)`.
+
+```spice-test id=NET-MODEL-1 covers=model-card,model-type
+.model dmod d(is=1e-14)
+I1 0 a 1m
+D1 a 0 dmod
+* expect: v(a) = 0.6551 tol=2e-3
+```
+
+`.csparam` makes a parameter available to the control language.
+
+```spice-test id=NET-CSPARAM-1 covers=csparam-card dialect=ngspice
+.csparam x=5
+V1 a 0 1
+R1 a 0 1k
+* expect: x = 5
+```
+
+A user function.
+
+```spice-test id=NET-FUNC-1 covers=func-card dialect=ngspice
+.func double(x) {2*x}
+V1 a 0 {double(3)}
+R1 a 0 1k
+* expect: v(a) = 6
+```
+
+A global node is visible inside subcircuits without being a port.
+
+```spice-test id=NET-GLOBAL-1 covers=global-card dialect=ngspice
+.global vdd
+.subckt load out
+R1 vdd out 1k
+R2 out 0 1k
+.ends load
+V1 vdd 0 5
+X1 o load
+* expect: v(o) = 2.5
+```
+
+Circuit temperature; the resistor has a first-order coefficient.
+
+```spice-test id=NET-TEMP-1 covers=temp-card dialect=ngspice
+.temp 50
+I1 0 a 1m
+R1 a 0 1k tc1=0.001
+* expect: v(a) = 1.023 tol=1e-3
+```
+
+`.include` inserts the file at that point.
+
+```spice-test id=NET-INC-1 covers=include-card dialect=ngspice uses=inc.cir
+.include inc.cir
+I1 0 a 1m
+* expect: v(a) = 1
+```
+
+`.lib file name` selects one library section from a file.
+
+```spice-test id=NET-LIB-1 covers=lib-use,lib-def dialect=ngspice uses=lib.lib
+.lib lib.lib mylib
+I1 0 a 1m
+* expect: v(a) = 2
+```
+
+Conditional netlist; only one branch is read.
+
+```spice-test id=NET-IF-1 covers=if-block dialect=ngspice
+.if (1 > 2)
+R1 a 0 1k
+.else
+R1 a 0 2k
+.endif
+I1 0 a 1m
+* expect: v(a) = 2
+```
