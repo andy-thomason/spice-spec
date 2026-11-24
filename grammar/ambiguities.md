@@ -53,3 +53,9 @@ SPICE3 (`SP3-UG`) and Xyce (`XYC-REF`) documentation has now been read for
 the lexical rules, source functions and a few element forms. The rest of the
 rows still only have ngspice evidence. HSPICE has not been read. Rows A-02,
 A-04, A-07, A-17, A-21 and A-25 are the most likely to differ.
+
+Xyce 7.10 has now been run on the doctest examples (spec/11-compat/): the
+number tail rule, `=` as a separator, expression precedence and associativity
+(`^` is a logical xor, `**` is right-associative), `log`, rounding of `nint`,
+time-zero source values, `.if`, `.temp`, and the unsupported analyses all differ
+from ngspice.

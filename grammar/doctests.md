@@ -60,6 +60,13 @@ conventions (lower case, `.global gnd`, the `r.x1.r1` naming). The modes
 `physical` and `deck` did not reproduce the original text in batch mode, so
 they are not used.
 
+## Running on Xyce
+
+`tools/doctest.py --simulator xyce --xyce COMMAND` runs the same examples on
+Xyce (see `spec/11-compat/xyce-vs-ngspice.md` for the command and the results).
+Listing and XSPICE examples do not apply. `tools/matrix.py` merges the result
+files into a table.
+
 ## Running
 
 ```
