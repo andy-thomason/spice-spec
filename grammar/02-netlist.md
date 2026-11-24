@@ -90,7 +90,7 @@ Manual 2.9 to 2.12. Rules:
   (`.param pip='pip+3'` fails).
 - Several assignments on one line are allowed.
 - An expression with spaces and no braces or quotes can be misparsed:
-  `.param a = 123 * 3 b = sqrt(9)` does not work as intended (manual 2.9.1).
+  an unbraced product followed by a second assignment on the same line can be misparsed (`NGS-42` 2.9.1 describes the failure; our own reproduction is a to-do under A-10).
   This is the weakest spot in the grammar. **A-10.**
 
 ## .include, .lib

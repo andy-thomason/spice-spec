@@ -122,7 +122,7 @@ nl-g  = "G" name node node "cur" "=" quoted-or-braced-expr [ "m" "=" value ]
 poly  = ( "E" / "G" / "F" / "H" ) name node node "poly" "(" int ")" 1*ref 1*value
 ```
 
-`vname` is the name of a voltage source whose current controls the element.
+`vname` names the voltage source that carries the controlling current.
 `poly` has `ref` as controlling node pairs (E, G) or source names (F, H).
 Its semantics (coefficient ordering) belong in the spec pages (A-14).
 

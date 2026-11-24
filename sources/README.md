@@ -15,10 +15,8 @@ unless noted). No text is copied from any of them.
 | `XYC-UG` | Xyce Users' Guide, SAND2025-05995 | 7.10 | https://xyce.sandia.gov/download/1756/ | Downloaded, not yet read |
 | `HSP` | Synopsys HSPICE documentation | not accessed | https://www.synopsys.com (login required) | **Not read.** HSPICE statements in this repo come only from `XYC-REF` or are marked "from memory". |
 
-Pointers, not read: ngspice source
-https://sourceforge.net/p/ngspice/ngspice/ci/master/tree/ ; Xyce source
-https://github.com/Xyce/Xyce ; SPICE3 source, Berkeley, from
-https://embedded.eecs.berkeley.edu/pubs/downloads/spice/ .
+Source code of any simulator is **out of bounds** for this project and is
+not listed here as a source. See [../docs/clean-room.md](../docs/clean-room.md).
 
 ## Citing
 
