@@ -44,6 +44,19 @@ and compares the last point to `VALUE` (default `tol=1e-6`, `atol=1e-12`).
 A block with language `spice-file name=FILE` supplies an auxiliary file for
 `.include` and `.lib` examples.
 
+### Listing examples (observed behavior)
+
+An example with `listing=logical` or `listing=expand` (and `deck=full`)
+does not run an analysis. The runner asks ngspice to print the processed
+deck with its `listing` command and compares the text with the block
+```` ```spice-listing for=ID ````. Comparison ignores line numbers and
+runs of white space. `logical` shows the result of pass 1; `expand` shows
+subcircuits flattened and parameters evaluated. The expected text is what
+ngspice printed, not what any manual states, and it includes ngspice-only
+conventions (lower case, `.global gnd`, the `r.x1.r1` naming). The modes
+`physical` and `deck` did not reproduce the original text in batch mode, so
+they are not used.
+
 ## Running
 
 ```

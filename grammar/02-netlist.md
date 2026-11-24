@@ -242,3 +242,242 @@ R1 a 0 2k
 I1 0 a 1m
 * expect: v(a) = 2
 ```
+
+### Expansion, observed with `listing expand`
+
+These examples show what ngspice 42 produces after it expands subcircuits
+and evaluates parameters, using `listing expand` (documented; `NGS-42`
+17.5). As in the pass 1 examples, the expected output is **observed**, is
+not stated in the manuals, and shows ngspice naming conventions that this
+spec does not require of other tools. They are the oracle for the future
+elaboration step. In expanded output, control sections and `.param`,
+`.subckt` and `.func` definitions are gone, and numbers that came from
+parameters are printed as 16-digit floats.
+
+A subcircuit instance is replaced by its elements, named
+`<letter>.<instance>.<element>`. Node `0` stays global.
+
+```spice-test id=EX-FLAT-1 deck=full listing=expand dialect=ngspice
+t
+.subckt half in out
+R1 in out 1k
+R2 out 0 1k
+.ends half
+V1 a 0 4
+X1 a b half
+.end
+```
+
+```spice-listing for=EX-FLAT-1
+t
+v1 a 0 4
+r.x1.r1 a b 1k
+r.x1.r2 b 0 1k
+.end
+```
+
+Internal nodes are prefixed with the instance name and a dot, so two
+instances do not share them.
+
+```spice-test id=EX-NODE-1 deck=full listing=expand dialect=ngspice
+t
+.subckt s in out
+R1 in m 1k
+R2 m out 1k
+.ends s
+X1 a b s
+X2 b c s
+.end
+```
+
+```spice-listing for=EX-NODE-1
+t
+r.x1.r1 a x1.m 1k
+r.x1.r2 x1.m b 1k
+r.x2.r1 b x2.m 1k
+r.x2.r2 x2.m c 1k
+.end
+```
+
+Nested instances nest the names.
+
+```spice-test id=EX-NEST-1 deck=full listing=expand dialect=ngspice
+t
+.subckt inner p q
+R1 p q 1k
+.ends inner
+.subckt outer p q
+X2 p q inner
+R9 p q 2k
+.ends outer
+X1 a b outer
+.end
+```
+
+```spice-listing for=EX-NEST-1
+t
+r.x1.x2.r1 a b 1k
+r.x1.r9 a b 2k
+.end
+```
+
+A subcircuit defined inside another one, closed with an unnamed `.ends`, is
+usable inside it. Note the doubled prefix in the result.
+
+```spice-test id=EX-ENDS-1 deck=full listing=expand dialect=ngspice
+t
+.subckt outer p q
+.subckt inner a b
+R1 a b 1k
+.ends
+X1 p q inner
+.ends outer
+X9 u v outer
+.end
+```
+
+```spice-listing for=EX-ENDS-1
+t
+r.x9.r.x1.r1 u v 1k
+.end
+```
+
+Parameters: braced expressions are evaluated. A bare parameter name used as
+a value is also replaced by its value in ngspice, so a name in a value
+position can be a parameter and not only a model name (A-15).
+
+```spice-test id=EX-PARAM-1 deck=full listing=expand dialect=ngspice
+t
+.param rv=2k
+R1 a 0 {rv}
+R2 a 0 {rv*2}
+R3 a 0 rv
+.end
+```
+
+```spice-listing for=EX-PARAM-1
+t
+r1 a 0 2.000000000000000e+03
+r2 a 0 4.000000000000000e+03
+r3 a 0 2.000000000000000e+03
+.end
+```
+
+Subcircuit parameters have defaults and can be overridden at the call.
+
+```spice-test id=EX-PARAMS-1 deck=full listing=expand dialect=ngspice
+t
+.subckt s in out params: r=1k
+R1 in out {r}
+.ends s
+X1 a b s
+X2 b c s r=2k
+.end
+```
+
+```spice-listing for=EX-PARAMS-1
+t
+r.x1.r1 a b 1.000000000000000e+03
+r.x2.r1 b c 2.000000000000000e+03
+.end
+```
+
+A model defined inside a subcircuit is renamed per instance, with a colon
+(not a dot) in the new name.
+
+```spice-test id=EX-MODEL-1 deck=full listing=expand dialect=ngspice
+t
+.subckt s in out
+.model dm d(is=1e-14)
+D1 in out dm
+.ends s
+X1 a b s
+.end
+```
+
+```spice-listing for=EX-MODEL-1
+t
+.model x1:dm d(is=1e-14)
+d.x1.d1 a b x1:dm
+.end
+```
+
+A global node is not renamed.
+
+```spice-test id=EX-GLOBAL-1 deck=full listing=expand dialect=ngspice
+t
+.global vdd
+.subckt s out
+R1 vdd out 1k
+.ends s
+X1 o s
+.end
+```
+
+```spice-listing for=EX-GLOBAL-1
+t
+r.x1.r1 vdd o 1k
+.end
+```
+
+`.if` keeps only the branch whose condition holds.
+
+```spice-test id=EX-IF-1 deck=full listing=expand dialect=ngspice
+t
+.if (1 > 2)
+R1 a 0 1k
+.else
+R1 a 0 2k
+.endif
+.end
+```
+
+```spice-listing for=EX-IF-1
+t
+r1 a 0 2k
+.end
+```
+
+`.func` calls are evaluated in braces.
+
+```spice-test id=EX-FUNC-1 deck=full listing=expand dialect=ngspice
+t
+.func double(x) {2*x}
+R1 a 0 {double(3)}
+.end
+```
+
+```spice-listing for=EX-FUNC-1
+t
+r1 a 0 6.000000000000000e+00
+.end
+```
+
+Subcircuit names are looked up without regard to case.
+
+```spice-test id=EX-CASE-1 deck=full listing=expand dialect=ngspice
+t
+.subckt s in out
+R1 in out 1k
+.ends
+X1 a b S
+.end
+```
+
+```spice-listing for=EX-CASE-1
+t
+r.x1.r1 a b 1k
+.end
+```
+
+Instance names are case-insensitive too, so two instances that differ only
+in case collide and ngspice reports an error.
+
+```spice-test id=EX-DUP-1 dialect=ngspice expect=reject
+.subckt s in out
+R1 in out 1k
+.ends
+V1 a 0 1
+x1 a b s
+X1 b c s
+```

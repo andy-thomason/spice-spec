@@ -21,7 +21,7 @@ def attrs(s):
 
 
 def parse_md(path):
-    tests, files, rules = [], {}, set()
+    tests, files, rules, listings = [], {}, set(), {}
     lines = open(path, encoding="utf-8").read().split("\n")
     i = 0
     while i < len(lines):
@@ -42,6 +42,8 @@ def parse_md(path):
         elif kind == "spice-file":
             a = attrs(rest)
             files[a["name"]] = "\n".join(body) + "\n"
+        elif kind == "spice-listing":
+            listings[attrs(rest)["for"]] = body
         elif kind == "spice-test":
             a = attrs(rest)
             a["body"] = body
@@ -49,7 +51,7 @@ def parse_md(path):
             a["line"] = i + 1
             tests.append(a)
         i = j + 1
-    return tests, files, rules
+    return tests, files, rules, listings
 
 
 def collect(paths):
@@ -62,9 +64,10 @@ def collect(paths):
             mds.append(p)
     allt, allr = [], set()
     for md in sorted(mds):
-        t, f, r = parse_md(md)
+        t, f, r, lst = parse_md(md)
         for x in t:
             x["files"] = f
+            x["expected_listing"] = lst.get(x["id"])
         allt += t
         allr |= r
     return allt, allr
@@ -72,6 +75,8 @@ def collect(paths):
 
 def build(t):
     body = list(t["body"])
+    if "listing" in t and t.get("deck") != "full":
+        raise SystemExit("%s: listing examples must use deck=full" % t["id"])
     checks = []
     for ln in body:
         m = EXPECT.match(ln)
@@ -88,7 +93,9 @@ def build(t):
         out = ["doctest " + t["id"]] + body
         if not ANALYSIS.search(text):
             out.append(".op")
-    if "uses_control" not in t:
+    if "listing" in t:
+        out += [".control", "listing " + t["listing"], ".endc"]
+    elif "uses_control" not in t:
         out.append(".control")
         out.append("run")
         for k, (expr, _, _) in enumerate(checks):
@@ -96,6 +103,33 @@ def build(t):
         out.append(".endc")
     out.append(".end")
     return "\n".join(out) + "\n", checks
+
+
+def norm(s):
+    return " ".join(s.split())
+
+
+def check_listing(t, log):
+    """Compare the text of `listing MODE` output, ignoring line numbers and
+    white-space runs, with the spice-listing block. The generated control
+    lines are removed from the tail first."""
+    want = t.get("expected_listing")
+    if want is None:
+        return "FAIL", "no spice-listing block for " + t["id"]
+    got = []
+    for ln in log.splitlines():
+        m = re.match(r"^\s*\d+ : ?(.*)$", ln)
+        if m:
+            got.append(norm(m.group(1)))
+    for drop in (".endc", "listing " + t["listing"], ".control"):
+        for i in range(len(got) - 1, -1, -1):
+            if got[i] == drop:
+                del got[i]
+                break
+    want = [norm(x) for x in want if x.strip()]
+    if got != want:
+        return "FAIL", "listing differs:\n  got:  %s\n  want: %s" % (got, want)
+    return "PASS", ""
 
 
 def run_one(t, ngspice, codemodels=None):
@@ -122,7 +156,10 @@ def run_one(t, ngspice, codemodels=None):
         log = p.stdout + p.stderr
         errs = [l for l in log.splitlines() if l.startswith("Error")]
         warns = [l for l in log.splitlines() if l.startswith("Warning")]
-        got = "reject" if (p.returncode != 0 or errs) else ("warn" if warns else "accept")
+        # A listing-only deck runs no simulation, and ngspice then exits with
+        # status 1, so only error messages count for listing examples.
+        bad_exit = p.returncode != 0 and "listing" not in t
+        got = "reject" if (bad_exit or errs) else ("warn" if warns else "accept")
         want = t.get("expect", "accept")
         if want == "accept" and got == "warn":
             return "FAIL", "unexpected warning: " + warns[0]
@@ -130,6 +167,8 @@ def run_one(t, ngspice, codemodels=None):
             return "FAIL", "expected %s, got %s %s" % (want, got, (errs or warns or [""])[0])
         if got == "reject":
             return "PASS", ""
+        if "listing" in t:
+            return check_listing(t, log)
         for k, (expr, val, a) in enumerate(checks):
             f = os.path.join(d, "out%d.dat" % k)
             if not os.path.exists(f):
