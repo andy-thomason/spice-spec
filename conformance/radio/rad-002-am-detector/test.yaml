@@ -1,17 +1,20 @@
 id: RAD-002
 title: Diode AM detector
-tags: [common, "dialect:ngspice", "dialect:xyce"]
+tags: ["dialect:ngspice"]   # AM(...) also believed in HSPICE, from memory; unchecked
 kind: cross-tool
 status: verified
 verified_on: [ngspice]
 pending: [tool_agreement]
 netlists:
-  ngspice: netlist.ngspice.cir
-  xyce: netlist.xyce.cir
+  default: netlist.am.cir          # AM(...) source function
+  ngspice-bsource: netlist.ngspice.cir
+  xyce-bsource: netlist.xyce.cir   # untested
 notes: |
-  Only the source card B1 differs. A portable AM source is an open item
-  (see docs/design.md, section 12). The Xyce variant is untested; Xyce is
-  believed to require braces around the expression.
+  Only the source card differs between variants. The AM variant uses the
+  source function AM(0.05 2 1k 1meg 0 0), which gives the same waveform as
+  the B source: 0.05*(2+sin(2*pi*1k*t))*sin(2*pi*1meg*t). It avoids
+  tool-specific expression syntax, so it is the preferred form. Xyce
+  support for AM is unknown. The Xyce B-source variant is untested.
 analysis_window: 2m to 5m   # skip start-up and the Cc/Ra settling
 checks:
   - name: fundamental_dominates_carrier
@@ -47,3 +50,14 @@ results:
     ratio_2kHz_to_1kHz: 0.315
     outcome: pass (against the revised bounds above)
     note: With the original bound (<= 0.25) this test failed on the second harmonic. Bound was changed after the run; see refs.
+  - tool: ngspice 42 (Ubuntu package)
+    date: 2026-11-24
+    netlist: netlist.am.cir
+    window: 2 ms to 5 ms, 250k points, mean removed, direct DFT
+    amplitude_1kHz: "1.2025 mV"
+    amplitude_2kHz: "0.3793 mV"
+    amplitude_1MHz: "0.1029 mV"
+    ratio_1kHz_to_1MHz: 11.69
+    ratio_2kHz_to_1kHz: 0.3155
+    outcome: pass
+    note: Matches the B-source run to four significant figures (1.2025 mV both).

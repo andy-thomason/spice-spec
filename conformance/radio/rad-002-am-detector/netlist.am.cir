@@ -1,0 +1,15 @@
+RAD-002 AM diode detector (AM source)
+* 1 MHz carrier, 50 percent modulated at 1 kHz: 0.05*(2+sin(2*pi*1k*t))*sin(2*pi*1meg*t)
+V1 ant 0 AM(0.05 2 1k 1meg 0 0)
+Rant ant tank 10k
+L1 tank 0 240u
+C1 tank 0 105p
+D1 tank det DSCH
+Rl det 0 100k
+Cf det 0 1n
+Cc det aud 100n
+Ra aud 0 10k
+.model DSCH D(Is=1e-8 N=1.05 Rs=10 Cjo=1p)
+.tran 20n 5m
+.print tran v(aud)
+.end

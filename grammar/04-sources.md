@@ -35,8 +35,14 @@ Notes and open points:
   accept and ignore, is open (A-19).
 - An optional eighth PULSE parameter (phase) exists with
   `behavior=xs` (manual 4.1.1). `dialect:ngspice`.
-- The AM definition in the manual's formula differs in how it uses
-  `phases` and `vo`; check by test before specifying (A-20).
+- The AM formula printed in the manual is garbled (it uses `phases` twice
+  and puts `vo` inside a sum). Observed on ngspice 42 with
+  `AM(0.05 2 1k 1meg 0 0)`: the waveform is
+  `va*(vo + sin(2*pi*mf*t))*sin(2*pi*fc*t)`, with envelope peaks at the
+  predicted values. With `td=0.5m` the output is zero until `td` and the
+  modulation phase is counted from `td`. With `phases=90` the envelope did
+  not shift; the effect on carrier phase was not examined. Used in
+  RAD-002. Remaining part of A-20: the exact role of `phases`.
 - `trnoise`, `trrandom`, `external` and the RF port form are
   `dialect:ngspice` extensions and are not yet specified.
 - For analyses before `.tran`, the source value is the time-zero value.
