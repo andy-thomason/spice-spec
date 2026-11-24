@@ -1,0 +1,15 @@
+RAD-002 AM diode detector (Xyce)
+* 1 MHz carrier, 50 percent modulated at 1 kHz, via behavioral source.
+B1 ant 0 V={0.1*(1 + 0.5*sin(2*3.14159*1k*TIME)) * sin(2*3.14159*1meg*TIME)}
+Rant ant tank 10k
+L1 tank 0 240u
+C1 tank 0 105p
+D1 tank det DSCH
+Rl det 0 100k
+Cf det 0 1n
+Cc det aud 100n
+Ra aud 0 10k
+.model DSCH D(Is=1e-8 N=1.05 Rs=10 Cjo=1p)
+.tran 20n 5m
+.print tran v(aud)
+.end

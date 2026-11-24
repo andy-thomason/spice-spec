@@ -1,0 +1,32 @@
+id: RAD-002
+title: Diode AM detector
+tags: [common, "dialect:ngspice", "dialect:xyce"]
+kind: cross-tool
+status: unverified
+netlists:
+  ngspice: netlist.ngspice.cir
+  xyce: netlist.xyce.cir
+notes: |
+  Only the source card B1 differs. A portable AM source is an open item
+  (see docs/design.md, section 12). The Xyce variant is untested; Xyce is
+  believed to require braces around the expression.
+analysis_window: 2m to 5m   # skip start-up and the Cc/Ra settling
+checks:
+  - name: fundamental_dominates_carrier
+    quantity: amplitude of v(aud) at 1 kHz / amplitude at 1 MHz
+    expected: ">= 10"
+  - name: fundamental_present
+    quantity: amplitude of v(aud) at 1 kHz
+    expected: "> 1 mV"      # placeholder; calibrate from first runs
+  - name: low_distortion
+    quantity: amplitude at 2 kHz / amplitude at 1 kHz
+    expected: "<= 0.25"
+  - name: tool_agreement
+    quantity: 1 kHz amplitude, ngspice vs Xyce
+    tolerance: 5%           # provisional
+refs: |
+  Carrier peak at the tank is about 0.1 V, so the diode works in its
+  square-law region. For m = 0.5, second harmonic over fundamental is
+  about m/4 = 12.5%. Output low-pass Rl*Cf = 100 us attenuates 1 kHz by
+  about 0.85 and the 1 MHz residue by a large factor. The numeric bounds
+  are provisional until reference runs exist.

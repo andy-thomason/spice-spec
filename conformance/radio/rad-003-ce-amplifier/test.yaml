@@ -1,0 +1,26 @@
+id: RAD-003
+title: Common-emitter audio stage, bias and midband gain
+tags: [core]
+kind: analytic
+status: unverified
+netlists:
+  default: netlist.cir
+checks:
+  - name: collector_current
+    quantity: operating-point Ic of Q1
+    expected: 1.8e-3     # A
+    tolerance: "1.6 mA to 2.0 mA"
+  - name: collector_voltage
+    quantity: operating-point v(c)
+    expected: 5.0        # V
+    tolerance: "4.6 V to 5.4 V"
+  - name: midband_gain
+    quantity: vdb(out) at 1 kHz
+    expected: 40.8       # dB
+    tolerance: "39 dB to 43 dB"
+refs: |
+  Base divider: 9*10k/57k = 1.58 V; base-current loading lowers it to
+  about 1.54 V. Vbe at about 1.8 mA with Is=6.7f is Vt*ln(Ic/Is) = 0.683 V,
+  so Ve = 0.86 V and Ie = 1.8 mA. Vc = 9 - 2.2k*1.8m = 5.0 V.
+  gm = Ic/Vt = 70 mS. Load Rc||Rload = 1.8k. Ce is 1.6 ohm at 1 kHz, so
+  gain = gm*1.8k/(1+gm*1.6) = about 110 = 40.8 dB.
