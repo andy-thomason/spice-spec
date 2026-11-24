@@ -32,6 +32,7 @@ unless marked.
 
 | A-25 | Leading white space: comment in SPICE3 and Xyce, ignored in ngspice. | Test; decision on the spec baseline |
 | A-26 | ngspice element forms contain many parameters not in SPICE3 (`m`, `scale`, `tc1`, ...). Spec needs a per-parameter provenance tag. | Table in `spec/03-elements/` |
+| A-27 | `DISTOF1`/`DISTOF2` on a source: documented with an optional magnitude, but ngspice 42 rejects the keyword with no value (AN-DISTO-2). | Check the SPICE3 and Xyce docs; decide which is the rule |
 
 ## Cross-tool items
 

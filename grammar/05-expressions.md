@@ -70,3 +70,63 @@ In run-time contexts the expression can contain `v(node)`, `i(vname)`,
 The manual's list of suffixes in this section (`g meg k m u n p f`) is
 shorter than the list in 2.1.4.2, which also has `t`, `mil` and `a`. Whether
 `1a` or `1mil` work inside an expression is **open (A-23)** and needs a test.
+
+## Examples (non-normative)
+
+Examples illustrate the rules above and are **not normative**: where an
+example and the rule text disagree, the rule text is the specification and
+the example is a bug to investigate. Examples run as doctests on ngspice
+(`tools/doctest.py`; see [doctests.md](doctests.md)). All are original.
+
+
+Precedence: multiplication binds tighter than addition.
+
+```spice-test id=EXPR-1 covers=expr,sum,term,atom dialect=ngspice
+.param p={2+3*4}
+V1 a 0 {p}
+R1 a 0 1k
+* expect: v(a) = 14
+```
+
+Power, written with `**`.
+
+```spice-test id=EXPR-2 covers=power dialect=ngspice
+V1 a 0 {2**3}
+R1 a 0 1k
+* expect: v(a) = 8
+```
+
+Unary minus.
+
+```spice-test id=EXPR-3 covers=unary dialect=ngspice
+V1 a 0 {-3+5}
+R1 a 0 1k
+* expect: v(a) = 2
+```
+
+The ternary operator.
+
+```spice-test id=EXPR-4 covers=ternary dialect=ngspice
+V1 a 0 {1 > 0 ? 10 : 20}
+R1 a 0 1k
+* expect: v(a) = 10
+```
+
+Logical and comparison operators give exactly 1 or 0.
+
+```spice-test id=EXPR-5 covers=oror,andand,compare dialect=ngspice
+V1 a 0 {(1 && 0) || 1}
+V2 b 0 {3 <= 4}
+R1 a 0 1k
+R2 b 0 1k
+* expect: v(a) = 1
+* expect: v(b) = 1
+```
+
+A function call and a nested function.
+
+```spice-test id=EXPR-6 dialect=ngspice
+V1 a 0 {sqrt(16) + abs(-1)}
+R1 a 0 1k
+* expect: v(a) = 5
+```

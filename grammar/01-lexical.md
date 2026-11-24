@@ -162,3 +162,87 @@ bare       = expr                ; run-time in B, E, G, R, L, C sources
 Braced and quoted expressions are evaluated when the deck is expanded.
 Bare expressions in behavioral elements are evaluated during analysis. See
 05-expressions.md and **A-07**.
+
+## Examples (non-normative)
+
+Examples illustrate the rules above and are **not normative**: where an
+example and the rule text disagree, the rule text is the specification and
+the example is a bug to investigate. Examples run as doctests on ngspice
+(`tools/doctest.py`; see [doctests.md](doctests.md)). All are original.
+
+
+A signed number with a fraction and an exponent.
+
+```spice-test id=LEX-NUM-1 covers=number,sign,mantissa,exponent,value
+V1 a 0 -1.5e-3
+R1 a 0 1k
+* expect: v(a) = -1.5e-3
+```
+
+Scale factors; letters after a number or a scale factor are ignored.
+
+```spice-test id=LEX-NUM-2 covers=scale,letter
+V1 a 0 2k
+V2 b 0 3MEGohm
+V3 c 0 10Volts
+V4 d 0 5mil
+R1 a 0 1k
+R2 b 0 1k
+R3 c 0 1k
+R4 d 0 1k
+* expect: v(a) = 2000
+* expect: v(b) = 3e6
+* expect: v(c) = 10
+* expect: v(d) = 1.27e-4
+```
+
+In ngspice `a` is atto. SPICE3 has no atto; Xyce reads `a` as amperes unless started with `-hspice-ext units`.
+
+```spice-test id=LEX-NUM-3 covers=a-atto dialect=ngspice
+V1 a 0 3a
+R1 a 0 1k
+* expect: v(a) = 3e-18 tol=1e-6 atol=1e-24
+```
+
+Names are free-form. Node `0` and node `00` are different nodes; `=`, commas and parentheses are separators.
+
+```spice-test id=LEX-SEP-1 covers=device-name,name-char,node-name
+V_in 1 0 1
+V_two 00 0 2
+Rload_1 1 0 1k
+Rload_2 00 0 1k
+* expect: v(1) = 1
+* expect: i(v_two) = -2e-3
+```
+
+Separators: these two lines are equal. `DC=3` and `DC 3` are the same tokens.
+
+```spice-test id=LEX-SEP-2
+V1 a 0 DC=3
+V2 b 0 DC 3
+R1 a 0 1k
+R2 b 0 1k
+* expect: v(a) = 3
+* expect: v(b) = 3
+```
+
+A parameter name and a braced expression.
+
+```spice-test id=LEX-PARAM-1 covers=param-name,param-card,param-assign,braced dialect=ngspice
+.param my_p1=3
+V1 a 0 {my_p1*2}
+R1 a 0 1k
+* expect: v(a) = 6
+```
+
+A quoted expression is evaluated at expansion time. A bare expression in a behavioral source is evaluated during analysis.
+
+```spice-test id=LEX-EXPR-1 covers=quoted,bare dialect=ngspice
+.param q='2*3'
+V1 a 0 'q'
+B1 b 0 V=2*3
+R1 a 0 1k
+R2 b 0 1k
+* expect: v(a) = 6
+* expect: v(b) = 6
+```
