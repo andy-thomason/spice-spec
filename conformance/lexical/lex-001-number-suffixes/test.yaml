@@ -1,0 +1,32 @@
+id: LEX-001
+title: Number suffixes, trailing letters and unit-letter collisions
+tags: ["dialect:ngspice"]
+kind: analytic
+status: verified
+verified_on: [ngspice]
+netlists:
+  default: netlist.cir
+checks:
+  - {name: a,  quantity: "v(a), 1A",       expected: 1.0e-18, tolerance: "exact"}
+  - {name: b,  quantity: "v(b), 1F",       expected: 1.0e-15, tolerance: "exact"}
+  - {name: c,  quantity: "v(c), 1G",       expected: 1.0e9,   tolerance: "exact"}
+  - {name: d,  quantity: "v(d), 1T",       expected: 1.0e12,  tolerance: "exact"}
+  - {name: e,  quantity: "v(e), 5V",       expected: 5.0,     tolerance: "exact"}
+  - {name: f,  quantity: "v(f), 1U",       expected: 1.0e-6,  tolerance: "exact"}
+  - {name: g,  quantity: "v(g), 1MEGOHM",  expected: 1.0e6,   tolerance: "exact"}
+  - {name: h,  quantity: "v(h), 1Mi",      expected: 1.0e-3,  tolerance: "exact"}
+  - {name: i,  quantity: "v(i), 1mil",     expected: 2.54e-5, tolerance: "exact"}
+  - {name: j,  quantity: "v(j), 10Volts",  expected: 10.0,    tolerance: "exact"}
+  - {name: k,  quantity: "v(k), 1Hz",      expected: 1.0,     tolerance: "exact"}
+  - {name: l,  quantity: "v(l), 2MA",      expected: 2.0e-3,  tolerance: "exact"}
+  - {name: m,  quantity: "v(m), DC=3",     expected: 3.0,     tolerance: "exact"}
+  - {name: n,  quantity: "v(n), 3.5E-1V",  expected: 0.35,    tolerance: "exact"}
+refs: |
+  grammar/01-lexical.md, "Numbers". "Exact" means equal after printing
+  with six significant digits.
+results:
+  - tool: ngspice 42 (Ubuntu package)
+    date: 2026-11-24
+    netlist: netlist.cir
+    outcome: pass
+    note: All 14 values matched. 1A is 1e-18 and 1F is 1e-15, i.e. unit letters that are also scale letters are read as scale factors.
