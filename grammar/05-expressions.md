@@ -27,7 +27,7 @@ power 2, multiply 3, add 4, comparison 5, and 6, or 7, ternary 8). The
 manual lists unary minus and `!` at the **same level as the tightest binding**,
 and power at level 2, which means `-2^2` and `2^-2` need testing before
 this grammar is accepted (A-21). Equal precedence binary operators group
-left to right. The verbose operators `not and or div mod` are reserved words
+left to right. Word forms of some operators (`not`, `and`, `or`, `div`, `mod`) are reserved words
 (manual 2.9.6) and map to the symbols.
 
 ## Truth values

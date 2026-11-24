@@ -34,10 +34,9 @@ says end-of-line comments are ignored. **To confirm by test, A-03.**
 
 ## Separators
 
-Tag `core`. Sources: `SP3-UG` Description ("Fields on a line are separated
-by one or more blanks, a comma, an equal sign, or a left or right
-parenthesis"), `NGS-42` 2.1.4.1. Not yet checked in `XYC-REF`. A field is
-separated by any run of the following:
+Tag `core`. Sources: `SP3-UG` Description (field separators), `NGS-42`
+2.1.4.1. Not yet checked in `XYC-REF`. Fields are split at any run of blanks,
+commas, equals signs and parentheses:
 
 ```abnf
 SEP   = 1*( SP / HTAB / "," / "=" / "(" / ")" )
@@ -112,8 +111,7 @@ documentation is read.
 
 ## Names
 
-Sources: `SP3-UG` Description ("A name field must begin with a letter...",
-node `0`), `NGS-42` 2.1.4.4, 2.1.4.5. Device name and ground rules are
+Sources: `SP3-UG` Description (name and node rules), `NGS-42` 2.1.4.4, 2.1.4.5. Device name and ground rules are
 `core`; the `gnd` alias and the excluded characters are `dialect:ngspice`.
 
 ```abnf

@@ -58,6 +58,13 @@ Source IDs used in the grammar files: `SP3-UG` (SPICE3 user guide),
 - Not read: HSPICE documentation, SPICE3f5 source, ngspice and Xyce source,
   `XYC-UG`.
 
+## Clean room
+
+Rules were written from documentation and observed behavior only. See
+[../docs/clean-room.md](../docs/clean-room.md). Parameter lists and keyword
+orders (for example the arguments of `PULSE`) are interface facts and match
+the manuals by necessity; descriptive text is our own wording.
+
 ## What is deliberately not in the grammar
 
 These are checked after parsing and are specified as semantic rules in the

@@ -98,21 +98,22 @@ semantics, edge cases, per-tool notes, conformance test IDs.
   only be recorded by users with a licence and are optional.
 - Tolerances are explicit per test. Results are stored with tool name,
   version and options so claims are reproducible.
-- Seed from existing open suites (ngspice `tests/`, Xyce regression
-  suite), subject to licence compatibility (section 8).
+- Tests are written from scratch. Do not copy or adapt netlists from
+  ngspice, Xyce or any other suite, and do not read their source (see
+  [clean-room.md](clean-room.md)). Existing suites may be run as a black
+  box for comparison only if their files stay outside this repo.
 
 ## 8. Sources, provenance and licensing
 
 This is the main legal and practical risk.
 
-- **SPICE3f5:** Berkeley-licensed (BSD-style). Source and original
-  manuals may be read and cited; check licence text before copying.
-- **ngspice:** open source (mixed BSD-style and other licences per
-  component). Manual and source readable; verify licence before reusing
-  text or tests.
-- **Xyce:** open source (GPL). Treat its source and regression tests as
-  read-only references; do not copy code or tests into a differently
-  licensed repo without checking.
+This project is **clean room** ([clean-room.md](clean-room.md)): no one reads
+or copies simulator source code, and documentation is paraphrased, not
+copied.
+
+- **SPICE3f5, ngspice, Xyce:** documentation may be read and cited, with
+  our own wording. Source code and regression suites are not read and not
+  copied, whatever their licence.
 - **HSPICE:** proprietary documentation. Do not copy or closely
   paraphrase it. Record only facts about behavior, with a citation to the
   document and section, written in our own words, and confirmed by
@@ -125,10 +126,12 @@ This is the main legal and practical risk.
 
 ## 9. Method
 
-1. **Baseline:** read SPICE3f5 source and manual; write L0 pages with
-   citations to the source files and functions that define behavior.
-2. **Compare:** for each feature, check ngspice and Xyce docs and source,
-   then run conformance netlists to confirm real behavior.
+1. **Baseline:** read the SPICE3 documentation; write L0 pages with
+   citations to the document and section. Confirm behavior by running
+   unmodified SPICE3f5 binaries as a black box. No source reading.
+2. **Compare:** for each feature, check ngspice and Xyce documentation,
+   then run conformance netlists on the tools to confirm real behavior.
+   Documentation and observed behavior only; never source code.
 3. **Add HSPICE:** from public documentation, marked `dialect:hspice`
    and flagged "documented, not independently verified" unless a licensed
    contributor confirms.
@@ -158,7 +161,9 @@ and the discrepancy noted.
   only observable contracts and tolerances.
 - Scope growth: the number of dialect features is large. Mitigate by
   milestone order and the layer model.
-- Test licensing from GPL sources.
+- Accidental contamination: a contributor (or an AI assistant) may have
+  seen simulator source before. Mitigated by the rules, declarations and
+  overlap audit in [clean-room.md](clean-room.md); not eliminated.
 
 ## 12. Open questions
 
