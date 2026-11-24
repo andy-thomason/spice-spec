@@ -33,6 +33,10 @@ unless marked.
 | A-25 | Leading white space: comment in SPICE3 and Xyce, ignored in ngspice. | Test; decision on the spec baseline |
 | A-26 | ngspice element forms contain many parameters not in SPICE3 (`m`, `scale`, `tc1`, ...). Spec needs a per-parameter provenance tag. | Table in `spec/03-elements/` |
 | A-27 | `DISTOF1`/`DISTOF2` on a source: documented with an optional magnitude, but ngspice 42 rejects the keyword with no value (AN-DISTO-2). | Check the SPICE3 and Xyce docs; decide which is the rule |
+| A-28 | Where `.include` and `.lib` are expanded: before parsing (ngspice inserts the text) or as an `Include` node inlined later (07-ast.md). Differences: line numbers, continuation across the boundary. | Decision and a test |
+| A-29 | Does `{` inside a word (`abc{1k}`) start a group? | Test |
+| A-30 | Decimal-to-double rounding of number values. | Decision |
+| A-31 | Whether comments are retained in the tree. | Decision |
 
 ## Cross-tool items
 

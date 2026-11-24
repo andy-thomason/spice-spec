@@ -61,14 +61,14 @@ Sources: `SP3-UG` Description ("Numbers"), `NGS-42` 2.1.4.2 and 2.1.4.3,
 `XYC-REF` 3.1 and 6.2, test LEX-001. Tags are given per rule.
 
 ```abnf
-number     = [ sign ] mantissa [ exponent ] [ scale ] *letter    ; LM
+number     = [ sign ] mantissa [ exponent ] [ scale ] *trailing    ; LM
 sign       = "+" / "-"
 mantissa   = 1*DIGIT [ "." *DIGIT ] / "." 1*DIGIT
-exponent   = "e" [ sign ] 1*DIGIT
+exponent   = ( "e" / "d" ) [ sign ] 1*DIGIT   ; "d" observed in ngspice only
 scale      = "t" / "g" / "meg" / "k" / "mil" / "m" / "u" / "n" / "p" / "f"
            / a-atto                      ; dialect-dependent, see rule 5
 a-atto     = "a"
-letter     = ALPHA
+trailing   = %x21-27 / %x2A-2B / %x2D-3C / %x3E-7E   ; any printable except separators
 ```
 
 Rules:
@@ -76,9 +76,13 @@ Rules:
 1. Case does not matter. `M` and `m` both mean milli. Mega is `meg`.
 2. **Longest match** between `meg`, `mil` and `m`. `1Mi` is milli (1e-3),
    because `mi` is not `mil`; the trailing `i` is ignored.
-3. Letters after the number that do not start a scale factor are ignored
-   (`10V`, `10Volts`, `1Hz`). Letters after a scale factor are ignored
-   (`1MEGOHM`, `2MA`).
+3. Characters after the number that do not start a scale factor are
+   ignored (`10V`, `10Volts`, `1Hz`). Characters after a scale factor are
+   ignored (`1MEGOHM`, `2MA`). `SP3-UG` and `NGS-42` say *letters*;
+   **observed on ngspice 42, the rule is wider**: everything up to the next
+   separator is ignored, including digits and punctuation (`1k5` is 1000,
+   `1_000` is 1, `0x10` is 0, `1.5.2` is 1.5). An exponent marker with no
+   digits is also just ignored (`1e` is 1). See 00-tokens.md.
 4. Therefore a **unit letter that is also a scale letter is a scale
    factor**: `1A` is 1e-18 (atto), `1F` is 1e-15 (femto), `1G` is 1e9,
    `1T` is 1e12. `5V` is 5.
@@ -181,7 +185,7 @@ R1 a 0 1k
 
 Scale factors; letters after a number or a scale factor are ignored.
 
-```spice-test id=LEX-NUM-2 covers=scale,letter
+```spice-test id=LEX-NUM-2 covers=scale
 V1 a 0 2k
 V2 b 0 3MEGohm
 V3 c 0 10Volts
