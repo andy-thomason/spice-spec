@@ -39,7 +39,10 @@ Attributes on the opening line:
 A line `* expect: EXPR = VALUE [tol=REL] [atol=ABS]` is a check. It is a
 comment to every simulator. The runner evaluates `EXPR` after the analysis
 and compares the last point to `VALUE` (default `tol=1e-6`, `atol=1e-12`).
-`EXPR` must be real: use `mag()` or `db()` for AC results.
+`EXPR` must be real: use `mag()` or `db()` for AC results. For a transient
+analysis, `* expect: v(a) @ 1.5u = 0.5` checks the value at that time, by
+linear interpolation between the printed points (the time can use SPICE
+suffixes). Without `@`, the last point is checked.
 
 A block with language `spice-file name=FILE` supplies an auxiliary file for
 `.include` and `.lib` examples.
@@ -60,7 +63,7 @@ they are not used.
 ## Running
 
 ```
-python3 -I tools/doctest.py --ngspice /path/to/ngspice grammar
+python3 -I tools/doctest.py --ngspice /path/to/ngspice grammar spec
 python3 -I tools/doctest.py --coverage grammar
 ```
 

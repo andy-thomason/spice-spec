@@ -49,9 +49,11 @@ Notes and open points:
   `AM(0.05 2 1k 1meg 0 0)`: the waveform is
   `va*(vo + sin(2*pi*mf*t))*sin(2*pi*fc*t)`, with envelope peaks at the
   predicted values. With `td=0.5m` the output is zero until `td` and the
-  modulation phase is counted from `td`. With `phases=90` the envelope did
-  not shift; the effect on carrier phase was not examined. Used in
-  RAD-002. Remaining part of A-20: the exact role of `phases`.
+  modulation phase is counted from `td`. `phases` is accepted and ignored
+  (measured with several values), and fewer than four parameters give a zero
+  source. The waveforms, with tests, are in
+  [../spec/06-sources/waveforms.md](../spec/06-sources/waveforms.md). Used in
+  RAD-002.
 - `trnoise`, `trrandom`, `external` and the RF port form are
   `dialect:ngspice` extensions and are not yet specified.
 - For analyses before `.tran`, the source value is the time-zero value.

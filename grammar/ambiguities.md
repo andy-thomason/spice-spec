@@ -24,7 +24,7 @@ unless marked.
 | A-17 | Order and optionality of `DC`, `AC`, `DISTOF`, function on V/I sources. | Tests |
 | A-18 | `X` call: where nodes end and `params:` begins. | Manual 2.9.3 |
 | A-19 | PWL `r`, `td` on current sources. | Test |
-| A-20 | AM source formula versus implementation. **Partly resolved for ngspice 42:** `va*(vo+sin(2*pi*mf*t))*sin(2*pi*fc*t)`, delayed by `td`; role of `phases` still open. | RAD-002; a test for `phases` |
+| A-20 | AM source. **Resolved for ngspice 42** (spec/06-sources/waveforms.md): the formula is `va*(vo+sin(2*pi*mf*(t-td)))*sin(2*pi*fc*(t-td))`, `phases` is accepted and ignored, and fewer than four parameters give a zero source. Other tools not checked. | Tests on other tools |
 | A-21 | Precedence of unary minus versus `^` (`-2^2`, `2^-2`). **Resolved for ngspice 42** (05-expressions.md rules 1 to 5): unary minus is looser than power and product; power is left-associative; `**` drops the sign of its base. Other tools not checked. | Tests on other tools |
 | A-22 | Function domains. `log` is base 10 in Xyce, natural in PSpice and in Xyce with `-hspice-ext math` (`XYC-REF` 6.1.14, 3.1). **ngspice 42: `log` is natural** (EXPR-12). Arithmetic is IEEE and only a non-finite final value is an error (EXPR-10, EXPR-11). | Test on Xyce |
 | A-23 | Suffixes `a`, `mil`, `t` inside expressions. | Test |
@@ -44,6 +44,8 @@ unless marked.
 | A-36 | A bare name in a value slot that is both a local model and a parameter: which wins. | Test |
 | A-37 | Subcircuit call parameters that have no default: set or error. | Test |
 | A-38 | `.lib` sections that call each other; `.include` inside a subcircuit. | Test |
+| A-39 | Where the documents differ from measured source behavior: `SIN` before its delay, the `AM` formula and `fc` default, `np` on `PULSE` (spec/06-sources/waveforms.md). | Tests on other tools |
+| A-40 | A zero `tr`/`tf` on `PULSE` is replaced by `tstep`: the print step or an internal limit. | Test with a different `tmax` |
 
 ## Cross-tool items
 

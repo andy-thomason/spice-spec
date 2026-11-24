@@ -16,6 +16,34 @@ ANALYSIS = re.compile(r"^\s*\.(op|dc|ac|tran|noise|tf|pz|sens|disto|pss|sp)\b", 
 EXPECT = re.compile(r"^\s*\*\s*expect:\s*(.+?)\s*=\s*(\S+)(.*)$")
 
 
+_SUFFIX = [("meg", 1e6), ("mil", 25.4e-6), ("t", 1e12), ("g", 1e9), ("k", 1e3),
+           ("m", 1e-3), ("u", 1e-6), ("n", 1e-9), ("p", 1e-12), ("f", 1e-15)]
+
+
+def spice_number(s):
+    """A number with a SPICE scale suffix, for `expr @ time` checks."""
+    m = re.match(r"([+-]?(?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?)([A-Za-z]*)", s)
+    if not m:
+        raise ValueError("bad number %r" % s)
+    v = float(m.group(1))
+    low = m.group(2).lower()
+    for name, f in _SUFFIX:
+        if low.startswith(name):
+            return v * f
+    return v
+
+
+def at_time(rows, t):
+    """Value at time t from (time, value) rows, linear between points."""
+    for k, (t1, v1) in enumerate(rows):
+        if abs(t1 - t) <= 1e-12 * max(1.0, abs(t)):
+            return v1
+        if t1 > t and k > 0:
+            t0, v0 = rows[k - 1]
+            return v0 + (v1 - v0) * (t - t0) / (t1 - t0)
+    raise ValueError("time %g is outside the simulated range" % t)
+
+
 def attrs(s):
     return {k: v.strip('"') for k, v in ATTR.findall(s)}
 
@@ -99,7 +127,7 @@ def build(t):
         out.append(".control")
         out.append("run")
         for k, (expr, _, _) in enumerate(checks):
-            out.append("wrdata out%d.dat %s" % (k, expr))
+            out.append("wrdata out%d.dat %s" % (k, expr.split("@")[0].strip()))
         out.append(".endc")
     out.append(".end")
     return "\n".join(out) + "\n", checks
@@ -173,8 +201,15 @@ def run_one(t, ngspice, codemodels=None):
             f = os.path.join(d, "out%d.dat" % k)
             if not os.path.exists(f):
                 return "FAIL", "no output for " + expr
-            row = [x for x in open(f).read().strip().splitlines()[-1].split()]
-            v = float(row[-1])
+            lines = open(f).read().strip().splitlines()
+            if "@" in expr:
+                rows = [(float(r.split()[0]), float(r.split()[-1])) for r in lines]
+                try:
+                    v = at_time(rows, spice_number(expr.split("@")[1].strip()))
+                except ValueError as ex:
+                    return "FAIL", "%s: %s" % (expr, ex)
+            else:
+                v = float(lines[-1].split()[-1])
             e = float(val)
             rtol = float(a.get("tol", "1e-6"))
             atol = float(a.get("atol", "1e-12"))
