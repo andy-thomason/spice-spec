@@ -13,8 +13,8 @@ JSON in the last section is illustrative.
 1. **Syntactic only.** The AST records what was written. It does not expand
    subcircuits, evaluate parameters or expressions, look up models, read
    `.include` or `.lib` files, apply defaults, or decide anything that
-   needs a symbol table. Those belong to a later *elaboration* step (not yet
-   specified).
+   needs a symbol table. Those belong to a later *elaboration* step
+   ([08-elaboration.md](08-elaboration.md)).
 2. **Faithful.** Names keep their case, numbers keep their text next to the
    value, expressions keep their raw text. Every node has a source span.
 3. **Order preserved.** Items, parameters and arguments keep source order.
@@ -316,7 +316,8 @@ selection (it needs parameter values); file reading for `.include` and
 `.lib`; model, source and subcircuit lookup; deciding the `Q`, `M` and `X`
 field splits; ground aliasing (`gnd` to `0`); case folding; dialect
 defaults; checking argument counts of source functions. These need a symbol
-table or a dialect table and are specified separately.
+table or a dialect table and are specified in
+[08-elaboration.md](08-elaboration.md).
 
 ## Machine form
 
