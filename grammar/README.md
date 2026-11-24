@@ -8,12 +8,14 @@ file can be reviewed and tested on its own.
 
 | File | Content |
 |------|---------|
+| [00-tokens.md](00-tokens.md) | Token kinds, numeric words, groups, dialect switches |
 | [01-lexical.md](01-lexical.md) | Pass 1 (physical to logical lines), separators, numbers, names |
 | [02-netlist.md](02-netlist.md) | Deck structure, `.subckt`, `.model`, `.param`, `.include`, `.lib`, `.global`, `.if` |
 | [03-elements.md](03-elements.md) | One rule per element letter |
 | [04-sources.md](04-sources.md) | Independent source functions (PULSE, SIN, EXP, PWL, SFFM, AM) |
 | [05-expressions.md](05-expressions.md) | Expression grammar, operators, functions |
 | [06-analyses.md](06-analyses.md) | Analysis, initial-condition and output cards |
+| [07-ast.md](07-ast.md) | AST node types, invariants, JSON form |
 | [ambiguities.md](ambiguities.md) | Numbered open issues and decisions |
 | [doctests.md](doctests.md) | How the non-normative examples at the end of each file are run against ngspice |
 
