@@ -5,9 +5,8 @@ Status: draft v0.1. The tree a parser produces from the tokens of
 
 This is a design, not something derived from a source document: it is our
 own specification of what a parser must record. The element argument
-layouts come from [03-elements.md](03-elements.md) and its sources. There is
-no reference parser yet, so nothing in this file is machine-checked; the
-JSON in the last section is hand-written and illustrative.
+layouts come from [03-elements.md](03-elements.md) and its sources. The
+JSON in the last section is illustrative.
 
 ## Principles
 
@@ -54,7 +53,7 @@ NumberLit = { text: Text, mantissa: Text, exponent: Text?, scale: Text?,
               tail: Text, value: Float }        see 00-tokens.md, number()
 Expr     = { form: "braced" | "quoted" | "bare", raw: Text, tree: ExprNode? }
 Value    = NumberLit | Expr | Ident
-Param    = { name: Ident, value: Value?, has_equals: Bool }
+Param    = { name: Ident, value: Value?, more: [Value]?, has_equals: Bool }
 Diagnostic = { severity: "error" | "warning", code: Text, message: Text }
 ```
 
@@ -65,7 +64,9 @@ Diagnostic = { severity: "error" | "warning", code: Text, message: Text }
   `Expr`; any other word is an `Ident`. A word like `1k` in a *node* field
   is an `Ident` (positional decision, 00-tokens.md).
 - `Param.value` is absent for flag-style parameters such as `off` or `uic`.
-  `has_equals` records whether `=` was written (A-04).
+  `more` holds the further values of a comma list such as `ic=0.6,5.0`
+  (`value` is the first). `has_equals` records whether `=` was written
+  (A-04).
 - `Expr.tree` is present only if the parser was asked to parse expressions.
   Expression syntax differs between tools, so the raw text is always kept.
 
@@ -98,7 +99,8 @@ does not change the tree. The per-letter table says what is in each field.
 
 ```text
 Element = { letter: Text, name: Ident, nodes: [Ident], rest: [Value],
-            params: [Param], source: SourceSpec?, poly: Poly? }
+            params: [Param], source: SourceSpec?, poly: Poly?,
+            params_marker: Bool? }
 ```
 
 - `name` is the full instance name including the letter (`R1`).
@@ -134,10 +136,9 @@ Element = { letter: Text, name: Ident, nodes: [Ident], rest: [Value],
 | other letters | 0 | all words | Preserved as written. |
 
 ```text
+Phasor     = { mag: Value?, phase: Value? }
 SourceSpec = { dc: Value?, has_dc_keyword: Bool,
-               ac: { mag: Value?, phase: Value? }?,
-               distof1: { mag: Value?, phase: Value? }?,
-               distof2: { mag: Value?, phase: Value? }?,
+               ac: Phasor?, distof1: Phasor?, distof2: Phasor?,
                function: SourceFunction? }
 SourceFunction = { name: Ident, args: [Value], params: [Param], has_parens: Bool }
 Poly = { dim: Value, items: [Value] }
@@ -161,7 +162,7 @@ DotCard = Model | Subckt | ParamCard | Func | Global | Temp | Csparam
 
 Model    = { name: Ident, type: Ident, params: [Param] }
 Subckt   = { name: Ident, ports: [Ident], params: [Param],
-             items: [Item], ends_name: Ident? }
+             params_marker: Bool?, items: [Item], ends_name: Ident? }
 ParamCard = { assignments: [Param] }
 Func     = { name: Ident, args: [Ident], body: Expr }
 Global   = { nodes: [Ident] }
@@ -171,7 +172,8 @@ Include  = { path: Text, form: "bare" | "double_quoted" | "quoted",
              expanded: [Item]? }
 LibUse   = { path: Text, form: ..., section: Ident, expanded: [Item]? }
 LibDef   = { name: Ident, items: [Item] }
-If       = { branches: [{ cond: Expr?, items: [Item] }] }     cond absent for else
+IfBranch = { cond: Expr?, items: [Item] }                      cond absent for else
+If       = { branches: [IfBranch] }
 OtherDot = { name: Text, words: [Value], raw: Text }
 ```
 
@@ -194,25 +196,104 @@ OtherDot = { name: Text, words: [Value], raw: Text }
 ```text
 Analysis = Op | Dc | Ac | Tran | Noise | Tf | Pz | Sens | Disto | Ic | Nodeset | Options
 
-OutputRef = { kind: "v" | "i", args: [Ident] }                  v(5,3), i(v1)
+OutputRef = { ref_kind: "v" | "i", args: [Ident] }              v(5,3), i(v1)
 Sweep     = { variation: "dec" | "oct" | "lin", points: Value, fstart: Value, fstop: Value }
 
 Op      = { }
-Dc      = { sweeps: [{ source: Ident, start: Value, stop: Value, step: Value }] }
+DcSweep = { source: Ident, start: Value, stop: Value, step: Value }
+Dc      = { sweeps: [DcSweep] }
 Ac      = { sweep: Sweep }
 Tran    = { tstep: Value, tstop: Value, tstart: Value?, tmax: Value?, uic: Bool }
 Noise   = { output: OutputRef, reference: Ident?, source: Ident, sweep: Sweep,
             points_per_summary: Value? }
 Tf      = { output: OutputRef, source: Ident }
-Pz      = { nodes: [Ident], kind: "cur" | "vol", mode: "pol" | "zer" | "pz" }
+Pz      = { nodes: [Ident], pz_kind: "cur" | "vol", mode: "pol" | "zer" | "pz" }
 Sens    = { output: OutputRef, ac: Sweep? }
 Disto   = { sweep: Sweep, f2overf1: Value? }
-Ic      = { items: [{ target: OutputRef, value: Value }] }
-Nodeset = { all: Value?, items: [{ target: OutputRef, value: Value }] }
+Assignment = { target: OutputRef, value: Value }
+Ic      = { items: [Assignment] }
+Nodeset = { all: Value?, items: [Assignment] }
 Options = { items: [Param] }
 ```
 
 `Dc.sweeps` has one or two entries. `Pz.nodes` has four.
+
+The field name `kind` is reserved for the node tag in the JSON form, so
+fields that would be called `kind` are named `ref_kind` and `pz_kind`.
+
+## Parsing rules
+
+What a parser does to build the tree. These are decisions of this spec, not
+observations of any tool, except where marked.
+
+**Cards.** After pass 1 and tokenization, a logical line is a dot card if
+its first word starts with `.`, otherwise an element. `LParen`, `RParen` and
+`Comma` tokens are skipped wherever a field is expected; they matter only
+for `has_parens`, output references like `v(a,b)`, comma lists, and raw
+expression text. `.end` stops parsing; later lines are ignored. A line that
+cannot be parsed becomes an `Invalid` item with a diagnostic: severity
+`warning` for ngspice (observed: it ignores such a line) and `error`
+otherwise.
+
+**Elements.**
+1. Take the fixed number of node words from the table (an `Ident` each).
+   Too few words makes the line `Invalid`.
+2. `rest` is every following value up to the first *keyword parameter* (a
+   word followed by `=`), a *flag word*, or the `params:` marker. The flag
+   words are `off` for `D`, `Q`, `J`, `Z` and `M`; they become `Param`s
+   without a value. (A-32.)
+3. Everything from there on is read as parameters: `name=value`, or a bare
+   word as a flag. The `params:` marker word sets `params_marker` and is not
+   a parameter.
+4. `R`, `C` and `L` need at least one `rest` value, or a keyword form
+   (`r=` for `R`, `c=` or `q=` for `C`, `l=` for `L`); otherwise the line is
+   `Invalid` ("resistor needs a value or model").
+5. For `E`, `F`, `G`, `H`: if the first word after the nodes is `poly`, the
+   next value is `Poly.dim` and the remaining values up to the first keyword
+   parameter are `Poly.items`; `rest` is then empty.
+
+**Parameter values.** In ordinary parameters (`area=2`, `tc1=0.001`) the
+value is one token; a comma may join further tokens (`more`). In
+*expression contexts* the value is everything up to the next keyword
+parameter (a word followed by `=`, outside parentheses). Expression contexts
+are: every `.param` and `.csparam` assignment, and these keywords: `r` on
+`R`, `c` and `q` on `C`, `l` on `L`, `v` and `i` on `B`, `vol` on `E`,
+`cur` on `G` (A-33). In an expression context a single braced or quoted
+token is an `Expr` of that form; a single *simple* token is a `Value`; any
+other token run is a bare `Expr` whose `raw` is the source text. A simple
+token is a numeric word with no operator characters in its tail, or an
+identifier.
+
+**Source specifications (`V`, `I`).** After the two nodes, read in any
+order: `dc` followed by one value; `ac`, `distof1`, `distof2` each followed
+by up to two numeric or expression values; and a source function. A leading
+value with no keyword is the `dc` value. Any other word (not followed by
+`=`) is a source function name; its arguments follow, in parentheses or
+not, up to the next `dc`/`ac`/`distof` keyword. Keyword parameters of the
+function (`r=`, `td=`) go in `SourceFunction.params`. `=` counts as a
+separator, so `DC=3` is `dc` with value 3.
+
+**Dot cards.**
+- `.lib` with one word opens a `LibDef` (closed by `.endl`); with two words
+  it is a `LibUse`.
+- `.include` takes its path from the next token: the inside of a `DQuoted` or
+  `Quoted` token, or the next word. `.include` and `.lib` are never read
+  here (A-28).
+- `.subckt` ports end at the `params:` marker or at the first keyword
+  parameter. `.ends` closes the innermost open `.subckt`; a name after it is
+  recorded as `ends_name` without being checked.
+- `.if` and `.elseif` store the rest of the line as a bare `Expr` condition.
+  `.else` has none. `.endif` closes the `If`.
+- `.control` to `.endc` is one `OtherDot` named `control`; `raw` is the
+  logical lines between them.
+- A dot card the spec does not define becomes `OtherDot` with its words as
+  values.
+
+**Diagnostics.** Codes used: `invalid-line`, `unterminated` (an unterminated
+group token), `number-error` (a number the dialect's tool rejects, such as
+`1D-3` in ngspice), `unclosed-block`, `missing-end`, and
+`dialect-extension` (a card, element letter or source function outside the
+chosen dialect; only checked for `spice3`).
 
 ## Invariants
 
@@ -248,7 +329,7 @@ Tools exchange the AST as JSON:
   chain is joined by ` <- `.
 - Numbers keep their text: `{"kind":"NumberLit","text":"1k","value":1000.0,...}`.
 
-Illustrative only; no tool produced this.
+Illustrative.
 
 ```text
 R1 a 0 1k
