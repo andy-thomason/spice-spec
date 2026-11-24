@@ -144,12 +144,15 @@ def _expand_includes(lines, d, diags, loader, depth):
 
 
 def pass1(data, file="<input>", dialect: Dialect = NGSPICE,
-          loader: Optional[Callable[[str], str]] = None) -> Pass1Result:
+          loader: Optional[Callable[[str], str]] = None, has_title: bool = True) -> Pass1Result:
     diags: List[Diag] = []
     text = _decode(data, file, diags)
     rows = text.replace("\r\n", "\n").split("\n")
-    title = rows[0] if rows else ""                          # P2
-    body = "\n".join([""] + rows[1:])                        # keep numbering
+    if has_title:
+        title = rows[0] if rows else ""                      # P2
+        body = "\n".join([""] + rows[1:])                    # keep numbering
+    else:                                                    # an included file has no title line
+        title, body = "", "\n".join(rows)
     lines = _process(body, file, dialect, diags, loader, 0)
     lines = _expand_includes(lines, dialect, diags, loader, 0)
     kept = []
@@ -158,6 +161,6 @@ def pass1(data, file="<input>", dialect: Dialect = NGSPICE,
             title = ll.text[len(".title"):].strip()          # P10
         else:
             kept.append(ll)
-    if not kept or kept[-1].text.strip().lower() != ".end":  # P11
+    if has_title and (not kept or kept[-1].text.strip().lower() != ".end"):  # P11
         diags.append(Diag("error", "missing-end", "the last line must be .end", file, 0))
     return Pass1Result(title, kept, diags)

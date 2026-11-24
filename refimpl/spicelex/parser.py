@@ -598,10 +598,11 @@ class Parser:
         return top, end_span
 
 
-def parse(data, file="<input>", dialect: Dialect = NGSPICE, loader: Optional[Callable[[str], str]] = None):
+def parse(data, file="<input>", dialect: Dialect = NGSPICE, loader: Optional[Callable[[str], str]] = None,
+          has_title: bool = True):
     """Parse a deck. `loader` is only used by pass 1 if you want includes
     inlined into the line stream; leave it None to get Include nodes."""
-    r = pass1(data, file, dialect, loader)
+    r = pass1(data, file, dialect, loader, has_title)
     p = Parser(dialect, file)
     items, end = p.parse_lines(r.lines)
     diags = []

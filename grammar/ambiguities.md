@@ -25,8 +25,8 @@ unless marked.
 | A-18 | `X` call: where nodes end and `params:` begins. | Manual 2.9.3 |
 | A-19 | PWL `r`, `td` on current sources. | Test |
 | A-20 | AM source formula versus implementation. **Partly resolved for ngspice 42:** `va*(vo+sin(2*pi*mf*t))*sin(2*pi*fc*t)`, delayed by `td`; role of `phases` still open. | RAD-002; a test for `phases` |
-| A-21 | Precedence of unary minus versus `^` (`-2^2`, `2^-2`). | Test |
-| A-22 | Function domains. `log` is base 10 in Xyce, natural in PSpice and in Xyce with `-hspice-ext math` (`XYC-REF` 6.1.14, 3.1); ngspice lists `ln, log` together. | Test `log(10)` on ngspice |
+| A-21 | Precedence of unary minus versus `^` (`-2^2`, `2^-2`). **Resolved for ngspice 42** (05-expressions.md rules 1 to 5): unary minus is looser than power and product; power is left-associative; `**` drops the sign of its base. Other tools not checked. | Tests on other tools |
+| A-22 | Function domains. `log` is base 10 in Xyce, natural in PSpice and in Xyce with `-hspice-ext math` (`XYC-REF` 6.1.14, 3.1). **ngspice 42: `log` is natural** (EXPR-12). Arithmetic is IEEE and only a non-finite final value is an error (EXPR-10, EXPR-11). | Test on Xyce |
 | A-23 | Suffixes `a`, `mil`, `t` inside expressions. | Test |
 | A-24 | `.dc` sweeps of temperature, parameters and model parameters. | Manual 15.3.2 |
 
@@ -39,6 +39,11 @@ unless marked.
 | A-31 | Whether comments are retained in the tree. | Decision |
 | A-32 | Which words are flags and which are positional (`off` for D, Q, J, Z, M is a flag; `on`/`off` on S and W stay in `rest`). The list is a parser decision, not observed. | Test per device |
 | A-33 | Which keyword parameters take expressions (`r`, `c`, `q`, `l`, `v`, `i`, `vol`, `cur`). Parser decision. | Check each tool's manual |
+| A-34 | Expression forms ngspice 42 accepts but no simple rule explains: `--2**2` is -4, `2*--2` is -4, a minus after `?` or `:` before a non-number (`1?-(2):3` is 2). A tool may reject them. | Decision |
+| A-35 | Which naming form for flattened items a conforming tool must produce, if any (08-elaboration.md). | Decision |
+| A-36 | A bare name in a value slot that is both a local model and a parameter: which wins. | Test |
+| A-37 | Subcircuit call parameters that have no default: set or error. | Test |
+| A-38 | `.lib` sections that call each other; `.include` inside a subcircuit. | Test |
 
 ## Cross-tool items
 

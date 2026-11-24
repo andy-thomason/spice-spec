@@ -16,6 +16,7 @@ file can be reviewed and tested on its own.
 | [05-expressions.md](05-expressions.md) | Expression grammar, operators, functions |
 | [06-analyses.md](06-analyses.md) | Analysis, initial-condition and output cards |
 | [07-ast.md](07-ast.md) | AST node types, invariants, JSON form |
+| [08-elaboration.md](08-elaboration.md) | AST to flat netlist: parameters, subcircuit expansion, `.if`, files |
 | [ambiguities.md](ambiguities.md) | Numbered open issues and decisions |
 | [doctests.md](doctests.md) | How the non-normative examples at the end of each file are run against ngspice |
 
