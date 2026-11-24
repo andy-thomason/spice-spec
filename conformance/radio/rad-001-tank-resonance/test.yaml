@@ -1,0 +1,22 @@
+id: RAD-001
+title: LC tank resonance
+tags: [core]
+kind: analytic
+status: unverified
+netlists:
+  default: netlist.cir
+checks:
+  - name: peak_frequency
+    quantity: frequency at maximum of vdb(tank)
+    expected: 1.0026e6   # Hz
+    tolerance: 2%
+  - name: peak_level
+    quantity: maximum of vdb(tank)
+    expected: -0.19      # dB
+    tolerance: "-0.6 dB to 0 dB"
+refs: |
+  f0 = 1/(2*pi*sqrt(L*C)) with L=240u, C=105p gives 1.0026 MHz.
+  Coil Q = w0*L/R = 6.30e6*240e-6/5 = about 300. Equivalent parallel
+  resistance Rp = (w0*L)^2/R = about 456k. Level at resonance is
+  Rp/(Rs+Rp) = 0.979 = -0.19 dB. Loaded Q is about 6.5, so the peak is
+  broad (about 155 kHz wide); the 2% tolerance covers loading shift.

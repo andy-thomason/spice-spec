@@ -1,0 +1,17 @@
+RAD-003 common-emitter audio stage
+Vcc vcc 0 9
+Vin in 0 AC 1
+Cin in b 10u
+R1 vcc b 47k
+R2 b 0 10k
+Rc vcc c 2.2k
+Re e 0 470
+Ce e 0 100u
+Q1 c b e Q2N3904
+Cout c out 10u
+Rload out 0 10k
+.model Q2N3904 NPN(Is=6.7f Bf=416 Vaf=74 Cje=4.5p Cjc=3.6p Rb=10)
+.op
+.ac dec 20 10 100k
+.print ac vdb(out)
+.end

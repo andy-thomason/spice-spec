@@ -1,0 +1,10 @@
+RAD-001 LC tank resonance
+* Source through 10k into a tank. L has 5 ohm series loss.
+Vin in 0 AC 1
+Rs in tank 10k
+L1 tank n1 240u
+Rl n1 0 5
+C1 tank 0 105p
+.ac dec 200 100k 10meg
+.print ac vdb(tank)
+.end
