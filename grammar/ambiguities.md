@@ -24,7 +24,7 @@ unless marked.
 | A-17 | Order and optionality of `DC`, `AC`, `DISTOF`, function on V/I sources. | Tests |
 | A-18 | `X` call: where nodes end and `params:` begins. | Manual 2.9.3 |
 | A-19 | PWL `r`, `td` on current sources. | Test |
-| A-20 | AM source formula versus implementation. | Test |
+| A-20 | AM source formula versus implementation. **Partly resolved for ngspice 42:** `va*(vo+sin(2*pi*mf*t))*sin(2*pi*fc*t)`, delayed by `td`; role of `phases` still open. | RAD-002; a test for `phases` |
 | A-21 | Precedence of unary minus versus `^` (`-2^2`, `2^-2`). | Test |
 | A-22 | Function domains and `log` base. | Tests |
 | A-23 | Suffixes `a`, `mil`, `t` inside expressions. | Test |
