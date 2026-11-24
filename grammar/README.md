@@ -34,12 +34,12 @@ Rules use ABNF (RFC 5234) with these conventions:
 
 Every rule carries a tag from docs/design.md section 4:
 
-- `core`: believed to be in SPICE3f5. **Not yet confirmed against the
-  SPICE3f5 manual or source.** This draft was written from the ngspice manual,
-  so every `core` tag is a hypothesis until checked.
-- `common`: present in at least two of ngspice, Xyce and HSPICE with the same
-  meaning. Only ngspice has been consulted so far, so this tag is not yet
-  used.
+- `core`: documented in the SPICE3 user guide (`SP3-UG`). Note this is the
+  SPICE3 documentation, not the SPICE3f5 source; nothing has been run
+  against SPICE3f5 itself.
+- `common`: documented in both ngspice and Xyce. The documentation was
+  compared, but meaning was not tested on Xyce. HSPICE documentation was not
+  read, so no rule is marked as agreed by all three.
 - `dialect:ngspice`, `dialect:xyce`, `dialect:hspice`: one tool only.
 
 Where this draft says only "ngspice", the rule is `dialect:ngspice` until
@@ -47,13 +47,16 @@ other tools are compared.
 
 ## Sources used in this draft
 
-- ngspice 42 manual (Debian package ngspice-doc 42+ds-3build1). Chapters 2,
-  3, 4, 5 and 15 are cited by section number. No text is copied; rules and
+Full registry with URLs: [../sources/README.md](../sources/README.md).
+Source IDs used in the grammar files: `SP3-UG` (SPICE3 user guide),
+`NGS-42` and `NGS-47` (ngspice manuals), `XYC-REF` (Xyce Reference Guide
+7.10), `XYC-UG`, `HSP`.
+
+- Read: `SP3-UG`, `NGS-42`, parts of `XYC-REF`. No text is copied; rules and
   prose are our own.
-- Observed behavior of ngspice 42 (Ubuntu package), recorded as conformance
-  tests where noted.
-- Not yet used: SPICE3f5 source and manual, Xyce Reference Guide, HSPICE
-  documentation.
+- Observed behavior of ngspice 42, recorded as conformance tests.
+- Not read: HSPICE documentation, SPICE3f5 source, ngspice and Xyce source,
+  `XYC-UG`.
 
 ## What is deliberately not in the grammar
 

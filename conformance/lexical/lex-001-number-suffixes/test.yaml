@@ -22,7 +22,10 @@ checks:
   - {name: m,  quantity: "v(m), DC=3",     expected: 3.0,     tolerance: "exact"}
   - {name: n,  quantity: "v(n), 3.5E-1V",  expected: 0.35,    tolerance: "exact"}
 refs: |
-  grammar/01-lexical.md, "Numbers". "Exact" means equal after printing
+  grammar/01-lexical.md, "Numbers"; sources SP3-UG (Circuit Description,
+  "Numbers"), NGS-42 2.1.4.2 and 2.1.4.3, XYC-REF 3.1 and 6.2. Cases a, b
+  (1A, 1F): 'a' is atto in ngspice only (not in SPICE3's list, not in Xyce
+  by default); 1F is femto everywhere. Other cases are in the SPICE3 list. "Exact" means equal after printing
   with six significant digits.
 results:
   - tool: ngspice 42 (Ubuntu package)

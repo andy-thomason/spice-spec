@@ -1,6 +1,24 @@
 # 02 Netlist structure and dot cards
 
-Source: ngspice manual 2.1 to 2.13. Tag `dialect:ngspice` unless stated.
+Sources and tags (registry in [../sources/README.md](../sources/README.md)):
+
+| Production | Tag | Sources |
+|------------|-----|---------|
+| deck, title, `.end` | `core` | `SP3-UG` Description; `NGS-42` 2.1.1, 2.3; `XYC-REF` 2.1.6 |
+| `.subckt`, `.ends`, `X` | `core` | `SP3-UG` Description "Subcircuits"; `NGS-42` 2.5; `XYC-REF` 2.1.37, 2.1.7 |
+| `.model` | `core` | `SP3-UG` "Device Models" (15 types); `NGS-42` 2.4 (17 types); `XYC-REF` 2.1.21 |
+| `.include` | `core` | `SP3-UG` "Combining files: .INCLUDE"; `NGS-42` 2.7; `XYC-REF` 2.1.15 (`.INC` or `.INCLUDE`) |
+| `.lib` (call and definition) | `common` | `NGS-42` 2.8; `XYC-REF` 2.1.16 |
+| `.param` | `common` | `NGS-42` 2.9; `XYC-REF` 2.1.26, 2.2.1 |
+| `.func` | `common` | `NGS-42` 2.10; `XYC-REF` 2.1.10 |
+| `.global` | `common` | `NGS-42` 2.6; `XYC-REF` 2.1.11 |
+| `.global_param` | `dialect:xyce` | `XYC-REF` 2.1.12 |
+| `.csparam`, `.if`, `.temp`, `.control` | `dialect:ngspice` | `NGS-42` 2.11, 2.13, 2.12, 16.4.3 |
+
+"Common" means documented in both ngspice and Xyce; the meaning has not been
+compared in detail, and HSPICE was not read. The prose below is from
+`NGS-42`. SPICE3 lists 15 model types; ngspice adds `L` and `VDMOS`
+(`SP3-UG` versus `NGS-42` Table 2.3).
 
 ## Deck
 

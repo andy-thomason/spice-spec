@@ -1,9 +1,39 @@
 # 03 Elements
 
-Source: ngspice 42 manual chapters 3 to 11 (instance lines only). Tag
-`dialect:ngspice` until compared with SPICE3f5 and other tools; entries in
-the **Base?** column say whether the letter is believed to exist in
-SPICE3f5 (hypothesis, not yet checked against its manual).
+Sources: `SP3-UG` Circuit Elements and Models page (the base forms);
+`NGS-42` chapters 3 to 11 (the forms below); `XYC-REF` chapter 2 for
+device syntax (not yet read). Registry:
+[../sources/README.md](../sources/README.md).
+
+**Reading the rules.** The ABNF below is the ngspice form. Parts that are
+**not** in the SPICE3 form are ngspice additions (`dialect:ngspice`). The
+SPICE3 base forms, from `SP3-UG`, are:
+
+| Letter | SPICE3 form (`core`) |
+|--------|----------------------|
+| R | `R n1 n2 value` or `R n1 n2 [value] [model] [L=] [W=] [TEMP=]` |
+| C | `C n+ n- value [IC=]` or `C n1 n2 [value] [model] [L=] [W=] [IC=]` |
+| L | `L n+ n- value [IC=]` |
+| K | `K L1 L2 value` |
+| S, W | `S n+ n- nc+ nc- model [ON/OFF]`, `W n+ n- vname model [ON/OFF]` |
+| V, I | `n+ n- [[DC] value] [AC [mag [phase]]] [DISTOF1 ..] [DISTOF2 ..] [function]` |
+| E, G | `n+ n- nc+ nc- value` |
+| F, H | `n+ n- vname value` |
+| B | `B n+ n- [I=expr] [V=expr]` |
+| T | `T n1 n2 n3 n4 Z0= [TD=] [F= [NL=]] [IC=v1,i1,v2,i2]` |
+| O, U | `O n1 n2 n3 n4 model`; `U n1 n2 n3 model L= [N=]` |
+| D | `D n+ n- model [area] [OFF] [IC=] [TEMP]` |
+| Q | `Q nc nb ne [ns] model [area] [OFF] [IC=vbe,vce] [TEMP=]` |
+| J | `J nd ng ns model [area] [OFF] [IC=vds,vgs] [TEMP]` |
+| M | `M nd ng ns nb model [L=] [W=] [AD=] [AS=] [PD=] [PS=] [NRD=] [NRS=] [OFF] [IC=] [TEMP=]` |
+| Z | `Z nd ng ns model [area] [OFF] [IC=vds,vgs]` |
+
+Everything else in the rules below (for example `m=`, `scale=`, `tc1=`,
+`dtemp=`, `noisy=`, `ac=` on R; thermal nodes on Q and D; `tj`; `vol=`/`cur=`
+on E and G; `poly`; the fifth Q node) is `dialect:ngspice` per `NGS-42`
+3.3.1 to 3.3.15, chapters 7 to 11. Entries in the **Base?** column below
+were checked against `SP3-UG` and all exist there except Y, P, A and N, which
+`SP3-UG` does not list.
 
 Common definitions:
 
@@ -20,7 +50,7 @@ keyword followed by a value, not by the `=` itself (A-04).
 
 | Letter | Element | Base? |
 |--------|---------|-------|
-| R C L K | passives, mutual inductor | yes |
+| R C L K | passives, mutual inductor | yes (`SP3-UG`) |
 | V I | independent sources | yes |
 | E F G H | dependent sources | yes |
 | B | behavioral source | yes |

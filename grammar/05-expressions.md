@@ -1,9 +1,11 @@
 # 05 Expressions
 
-Source: ngspice 42 manual 2.9.5 to 2.9.7. Tag `dialect:ngspice`. The manual
-itself states that ngspice has three expression parsers with different
-syntax (front end, `.param`, and the control language), so this file
-describes the netlist one.
+Sources: `NGS-42` 2.9.5 to 2.9.7 (everything below); `XYC-REF` 2.2 (the
+expression chapter, partly read: contexts, braces, `log`), 6.1.14. Tag
+`dialect:ngspice`; SPICE3 has no `.param` expressions, but `B` sources
+(`SP3-UG` Elements) have expressions. The manual states that ngspice has
+three expression parsers (front end, `.param`, control language), so this
+file describes the netlist one.
 
 ## Grammar
 
@@ -47,9 +49,11 @@ atanh arctan exp ln log abs nint int floor ceil sgn`.
 Two arguments: `pow pwr min max`.
 Three: `ternary_fcn(x,y,z)`. Random: `gauss agauss unif aunif limit`.
 
-Details to specify per function: domain, treatment of out-of-range
-arguments, and whether `log` is natural (the manual lists `ln, log` together).
-**A-22.**
+Details to specify per function: domain and out-of-range behavior. **`log`
+is not the same everywhere**: `XYC-REF` 6.1.14 says Xyce reads `log()` as
+base 10 and PSpice as natural log, and 3.1 says `-hspice-ext math` makes
+Xyce's `log` natural, which implies HSPICE is natural. `NGS-42` 2.9.5 lists
+`ln, log` together. **A-22.**
 
 ## Contexts
 

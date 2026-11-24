@@ -1,7 +1,16 @@
 # 04 Independent source functions
 
-Source: ngspice 42 manual 4.1.1 to 4.1.6. Tag `dialect:ngspice`; PULSE, SIN,
-EXP, PWL and SFFM are believed `core` (hypothesis).
+Sources: `SP3-UG` Elements page, "Independent Sources" (PULSE, SIN, EXP,
+PWL, SFFM); `NGS-42` 4.1.1 to 4.1.6 (all functions; section 4.1.6 is AM);
+`XYC-REF` 2.3.x (not yet read). Registry:
+[../sources/README.md](../sources/README.md).
+
+The five functions exist in SPICE3 and are `core`, but with fewer
+parameters: PULSE has seven (V1 V2 TD TR TF PW PER, no pulse count), SIN has
+five (VO VA FREQ TD THETA, no phase), SFFM has five (VO VA FC MDI FS, no
+phases), and PWL has no `r` or `td`. The extra parameters are
+`dialect:ngspice`. `AM` is `dialect:ngspice`: it is not on the SPICE3 page,
+and a text search of `XYC-REF` found no `AM(` source function.
 
 Parentheses and commas are separators, so the following are equivalent:
 `PULSE(0 1 0 1n 1n 5n 10n)` and `PULSE 0 1 0 1n 1n 5n 10n`.

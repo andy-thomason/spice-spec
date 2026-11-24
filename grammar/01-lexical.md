@@ -1,6 +1,8 @@
 # 01 Lexical structure
 
-Source: ngspice manual 2.1, 2.3, 2.9.5. Tag `dialect:ngspice` unless stated.
+Sources: `SP3-UG` (Circuit Description), `NGS-42` 2.1 and 2.3, `XYC-REF`
+2.1.39. Registry and URLs: [../sources/README.md](../sources/README.md).
+Each row or rule below gives its tag and sources.
 
 ## Pass 1: physical lines to logical lines
 
@@ -8,17 +10,17 @@ Pass 1 is a procedure, not a grammar. Apply these steps in order.
 
 | Step | Rule | Notes |
 |------|------|-------|
-| P1 | Read the file as UTF-8. Stop with an error on invalid UTF-8. | ngspice 2.1.2.1. |
-| P2 | The **first physical line is the title**, whatever it contains. | A leading `*` still works because the title is free text. |
-| P3 | Strip leading white space from every line. Drop empty lines. | |
+| P1 | Read the file as UTF-8. Stop with an error on invalid UTF-8. | `dialect:ngspice`. `NGS-42` 2.1.2.1. |
+| P2 | The **first physical line is the title**, whatever it contains. | `core`. `SP3-UG` "Title Line"; `NGS-42` 2.1.1, 2.3.1. A leading `*` still works because the title is free text. |
+| P3 | **Dialect split.** SPICE3 and Xyce: a line whose first character is white space is a comment, unless the next non-blank character is `+` (continuation). ngspice: leading white space is ignored and the line is parsed normally. Empty lines are dropped. | `SP3-UG` "Comments"; `XYC-REF` 2.1.39.1; `NGS-42` 2.1.1. A-25. |
 | P4 | If a line's first character is one of `=[]?()&%$\"!:` (and `§`), replace it by `*` and warn. | ngspice 2.1.2.2. Treated as a comment. |
-| P5 | A line starting with `*` is a comment. Drop it. | |
-| P6 | A line starting with `+` continues the previous logical line. Remove the `+` and join with a blank. | The continuation must directly follow. Comment lines between a line and its `+` line: **open, see A-03**. |
-| P7 | A line ending in two backslashes (`\\`) is joined with the next line. | ngspice 2.1.4.1. Not allowed for `.title`, `.lib`, `.include` (2.3.5). |
-| P8 | Remove an end-of-line comment: from `$ ` (dollar and a space) or `//` or `;` to the end of the line. A bare `$` is also accepted. | `$` is an ordinary character in PSPICE compatibility mode. |
+| P5 | A line starting with `*` is a comment. Drop it. | `core`/`common`. `SP3-UG` "Comments"; `NGS-42` 2.3.3; `XYC-REF` 2.1.39.1. |
+| P6 | `core`/`common`. `SP3-UG` Description; `NGS-42` 2.3.5; `XYC-REF` 2.1.39.3. A line starting with `+` continues the previous logical line. Remove the `+` and join with a blank. | The continuation must directly follow. Comment lines between a line and its `+` line: **open, see A-03**. |
+| P7 | A line ending in two backslashes (`\\`) is joined with the next line. | `dialect:ngspice`. `NGS-42` 2.1.4.1, 2.3.5. Not allowed for `.title`, `.lib`, `.include` (2.3.5). |
+| P8 | Remove an end-of-line comment. `;` is `common` (`NGS-42` 2.3.4; `XYC-REF` 2.1.39.2). `$ ` and `//` are `dialect:ngspice` (`NGS-42` 2.3.4), and `$` is an ordinary character in ngspice's PSPICE compatibility mode. SPICE3 documents no end-of-line comment. | |
 | P9 | Expand `.include` in place (before pass 2 sees the next line). | `.lib file name` selects a section. See 02-netlist.md. |
 | P10 | A `.title text` line anywhere replaces the title. | ngspice 2.3.1. |
-| P11 | The last logical line must be `.end`. | ngspice 2.1.1. |
+| P11 | The last logical line must be `.end`. | `core`. `SP3-UG` ".End line"; `NGS-42` 2.3.2; `XYC-REF` 2.1.6 (documented; wording not read). |
 
 Case folding: node and device names are case-insensitive in batch mode. In
 interactive or control mode, they follow the front end's rules (2.1.4.4).
@@ -32,8 +34,10 @@ says end-of-line comments are ignored. **To confirm by test, A-03.**
 
 ## Separators
 
-A field is separated by any run of the following, as stated in the manual
-(2.1.4.1):
+Tag `core`. Sources: `SP3-UG` Description ("Fields on a line are separated
+by one or more blanks, a comma, an equal sign, or a left or right
+parenthesis"), `NGS-42` 2.1.4.1. Not yet checked in `XYC-REF`. A field is
+separated by any run of the following:
 
 ```abnf
 SEP   = 1*( SP / HTAB / "," / "=" / "(" / ")" )
@@ -54,12 +58,17 @@ below for readability, and an implementation may treat it as optional.
 
 ## Numbers
 
+Sources: `SP3-UG` Description ("Numbers"), `NGS-42` 2.1.4.2 and 2.1.4.3,
+`XYC-REF` 3.1 and 6.2, test LEX-001. Tags are given per rule.
+
 ```abnf
 number     = [ sign ] mantissa [ exponent ] [ scale ] *letter    ; LM
 sign       = "+" / "-"
 mantissa   = 1*DIGIT [ "." *DIGIT ] / "." 1*DIGIT
 exponent   = "e" [ sign ] 1*DIGIT
-scale      = "t" / "g" / "meg" / "k" / "mil" / "m" / "u" / "n" / "p" / "f" / "a"
+scale      = "t" / "g" / "meg" / "k" / "mil" / "m" / "u" / "n" / "p" / "f"
+           / a-atto                      ; dialect-dependent, see rule 5
+a-atto     = "a"
 letter     = ALPHA
 ```
 
@@ -75,7 +84,16 @@ Rules:
    factor**: `1A` is 1e-18 (atto), `1F` is 1e-15 (femto), `1G` is 1e9,
    `1T` is 1e12. `5V` is 5.
 
-Rules 3 and 4 were checked on ngspice 42 (conformance test LEX-001).
+5. **The letter `a` differs between tools.** SPICE3's list has no `a`
+   (`SP3-UG`), so `1A` is 1. ngspice reads `a` as atto (1e-18, tested in
+   LEX-001). `XYC-REF` 6.2 says HSPICE accepts atto and Xyce does not, and
+   3.1 says Xyce treats `a` as amperes unless started with
+   `-hspice-ext units`. `a-atto` is therefore `dialect:ngspice`, and
+   believed `dialect:hspice` (second-hand). Plain `core` is the list
+   without it. A-02.
+
+Rules 1 to 3 are `core` (`SP3-UG`, `NGS-42`). Rule 4's examples with `A` are
+ngspice. Rules 3 and 4 were checked on ngspice 42 (test LEX-001).
 
 | Text | Value |
 |------|-------|
@@ -84,15 +102,19 @@ Rules 3 and 4 were checked on ngspice 42 (conformance test LEX-001).
 | `1Meg`, `1MEGOHM` | 1e6 |
 | `1m`, `1Mi`, `2MA` | 1e-3, 1e-3, 2e-3 |
 | `1mil` | 25.4e-6 |
-| `1A` | 1e-18 |
-| `1F` | 1e-15 |
+| `1A` | 1e-18 in ngspice; 1 in SPICE3 (documented, untested) |
+| `1F` | 1e-15 (`f` is femto in every tool listed) |
 
-Dialect notes (not yet checked): LT compatibility mode accepts RKM notation
+Dialect notes: LT compatibility mode accepts RKM notation
 such as `2K7` and `100R` (manual 2.1.4.3). HSPICE is believed to use the
 same suffixes but treats some unit words differently. Compare when HSPICE
 documentation is read.
 
 ## Names
+
+Sources: `SP3-UG` Description ("A name field must begin with a letter...",
+node `0`), `NGS-42` 2.1.4.4, 2.1.4.5. Device name and ground rules are
+`core`; the `gnd` alias and the excluded characters are `dialect:ngspice`.
 
 ```abnf
 device-name = LETTER *name-char          ; first letter selects element type
@@ -111,6 +133,10 @@ name-char   = any character except SEP and "=" "%" "(" ")" "," "[" "]" "<" ">" "
 
 ## Parameter names
 
+`dialect:ngspice` and `common` with Xyce for `.param` itself (`NGS-42`
+2.9.1; `XYC-REF` 2.1.26). SPICE3 has no `.param`. The character set below is
+ngspice only.
+
 ```abnf
 param-name = ALPHA *( ALPHA / DIGIT / "!" / "#" / "$" / "%" / "[" / "]" / "_" )
 ```
@@ -122,6 +148,10 @@ markers elsewhere (`$`, `%`, `[`, `]`), so the lexer needs the context
 function names (manual 2.9.6).
 
 ## Expression tokens
+
+`dialect:ngspice` (`NGS-42` 2.9.1, 2.9.7). `XYC-REF` 2.2 also allows braces
+and single quotes ("best practice ... braces ... for compatibility,
+single quotation marks"), which makes those two forms `common`.
 
 An expression is written in one of three forms:
 
