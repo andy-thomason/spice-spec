@@ -6,7 +6,7 @@ unless marked.
 | ID | Issue | Needs |
 |----|-------|-------|
 | A-01 | Case folding: what is folded and where (file names, strings, `.control`). | Tests per context |
-| A-02 | Unit letters that collide with scale letters (`1A`, `1F`). **Resolved for ngspice 42:** they are scale factors. Needs checking in other tools. | LEX-001; HSPICE docs |
+| A-02 | Unit letters that collide with scale letters (`1A`, `1F`). ngspice 42 reads `a` as atto (tested). SPICE3 has no atto; Xyce reads `a` as amperes unless `-hspice-ext units`; HSPICE accepts atto (second-hand, `XYC-REF` 6.2). | LEX-001; HSPICE docs; Xyce run |
 | A-03 | Order of comment removal and continuation joining; comment lines between a line and its `+` line. | Tests |
 | A-04 | `=` is a separator, so `name=value` and two positional fields look alike. Grammar needs keyword tables. | Decision |
 | A-05 | Node names in batch versus interactive/control mode; numeric-looking names. | Tests |
@@ -26,12 +26,16 @@ unless marked.
 | A-19 | PWL `r`, `td` on current sources. | Test |
 | A-20 | AM source formula versus implementation. **Partly resolved for ngspice 42:** `va*(vo+sin(2*pi*mf*t))*sin(2*pi*fc*t)`, delayed by `td`; role of `phases` still open. | RAD-002; a test for `phases` |
 | A-21 | Precedence of unary minus versus `^` (`-2^2`, `2^-2`). | Test |
-| A-22 | Function domains and `log` base. | Tests |
+| A-22 | Function domains. `log` is base 10 in Xyce, natural in PSpice and in Xyce with `-hspice-ext math` (`XYC-REF` 6.1.14, 3.1); ngspice lists `ln, log` together. | Test `log(10)` on ngspice |
 | A-23 | Suffixes `a`, `mil`, `t` inside expressions. | Test |
 | A-24 | `.dc` sweeps of temperature, parameters and model parameters. | Manual 15.3.2 |
 
+| A-25 | Leading white space: comment in SPICE3 and Xyce, ignored in ngspice. | Test; decision on the spec baseline |
+| A-26 | ngspice element forms contain many parameters not in SPICE3 (`m`, `scale`, `tc1`, ...). Spec needs a per-parameter provenance tag. | Table in `spec/03-elements/` |
+
 ## Cross-tool items
 
-Every row above needs the same question asked of Xyce and HSPICE. That has
-not been done: only ngspice has been consulted. Rows A-02, A-04, A-07, A-17
-and A-21 are the most likely to differ.
+SPICE3 (`SP3-UG`) and Xyce (`XYC-REF`) documentation has now been read for
+the lexical rules, source functions and a few element forms. The rest of the
+rows still only have ngspice evidence. HSPICE has not been read. Rows A-02,
+A-04, A-07, A-17, A-21 and A-25 are the most likely to differ.
