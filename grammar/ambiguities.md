@@ -37,6 +37,8 @@ unless marked.
 | A-29 | Does `{` inside a word (`abc{1k}`) start a group? | Test |
 | A-30 | Decimal-to-double rounding of number values. | Decision |
 | A-31 | Whether comments are retained in the tree. | Decision |
+| A-32 | Which words are flags and which are positional (`off` for D, Q, J, Z, M is a flag; `on`/`off` on S and W stay in `rest`). The list is a parser decision, not observed. | Test per device |
+| A-33 | Which keyword parameters take expressions (`r`, `c`, `q`, `l`, `v`, `i`, `vol`, `cur`). Parser decision. | Check each tool's manual |
 
 ## Cross-tool items
 
