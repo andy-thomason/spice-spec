@@ -2,7 +2,8 @@ id: RAD-001
 title: LC tank resonance
 tags: [core]
 kind: analytic
-status: unverified
+status: verified
+verified_on: [ngspice]
 netlists:
   default: netlist.cir
 checks:
@@ -20,3 +21,11 @@ refs: |
   resistance Rp = (w0*L)^2/R = about 456k. Level at resonance is
   Rp/(Rs+Rp) = 0.979 = -0.19 dB. Loaded Q is about 6.5, so the peak is
   broad (about 155 kHz wide); the 2% tolerance covers loading shift.
+results:
+  - tool: ngspice 42 (Ubuntu package)
+    date: 2026-11-24
+    netlist: netlist.cir
+    peak_frequency: "1.0e6 Hz on a grid of about 1.2% steps; within 2% of 1.0026e6"
+    peak_level: "-0.1937 dB"
+    outcome: pass
+    note: Sweep is coarse (200 points per decade); peak frequency is not pinned more tightly than the grid.

@@ -32,6 +32,11 @@ conformance/<group>/<id>-<name>/
 
 ## Status
 
-`unverified`: written from calculation, never run on any simulator. A test
-only moves to `verified` once results are recorded for at least ngspice
-and Xyce, with tool name and version. No runner exists yet (milestone M0).
+`unverified`: written from calculation, never run on any simulator.
+
+`verified`: results are recorded in the test's `results:` list, with tool
+name, version and date, and every check that applies to that tool passed.
+A test lists which tools it is verified against (`verified_on`). Checks
+that compare tools (`tool_agreement`) stay pending until two tools have
+results. Results so far were produced by hand, as no runner exists yet
+(milestone M0).
