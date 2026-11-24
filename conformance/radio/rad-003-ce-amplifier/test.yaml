@@ -2,7 +2,8 @@ id: RAD-003
 title: Common-emitter audio stage, bias and midband gain
 tags: [core]
 kind: analytic
-status: unverified
+status: verified
+verified_on: [ngspice]
 netlists:
   default: netlist.cir
 checks:
@@ -24,3 +25,12 @@ refs: |
   so Ve = 0.86 V and Ie = 1.8 mA. Vc = 9 - 2.2k*1.8m = 5.0 V.
   gm = Ic/Vt = 70 mS. Load Rc||Rload = 1.8k. Ce is 1.6 ohm at 1 kHz, so
   gain = gm*1.8k/(1+gm*1.6) = about 110 = 40.8 dB.
+results:
+  - tool: ngspice 42 (Ubuntu package)
+    date: 2026-11-24
+    netlist: netlist.cir
+    collector_current: "about 1.83 mA, from (9 - Vc)/2.2k"
+    collector_voltage: "4.964 V (Vb 1.544 V, Ve 0.864 V)"
+    midband_gain: "41.70 dB at 1 kHz"
+    outcome: pass
+    note: Gain is 0.9 dB above the hand calculation (40.8 dB), inside the 39 to 43 dB range. Probably the Ce impedance and rbb were estimated coarsely.
