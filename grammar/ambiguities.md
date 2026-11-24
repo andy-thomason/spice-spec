@@ -7,7 +7,7 @@ unless marked.
 |----|-------|-------|
 | A-01 | Case folding: what is folded and where (file names, strings, `.control`). | Tests per context |
 | A-02 | Unit letters that collide with scale letters (`1A`, `1F`). ngspice 42 reads `a` as atto (tested). SPICE3 has no atto; Xyce reads `a` as amperes unless `-hspice-ext units`; HSPICE accepts atto (second-hand, `XYC-REF` 6.2). | LEX-001; HSPICE docs; Xyce run |
-| A-03 | Order of comment removal and continuation joining; comment lines between a line and its `+` line. | Tests |
+| A-03 | Order of comment removal and continuation joining; comment lines between a line and its `+` line. **ngspice 42:** a `+` line continues the card across comment lines and blank lines (P1-CONT-1). Other tools not checked. | Tests on other tools |
 | A-04 | `=` is a separator, so `name=value` and two positional fields look alike. Grammar needs keyword tables. | Decision |
 | A-05 | Node names in batch versus interactive/control mode; numeric-looking names. | Tests |
 | A-06 | `$ % [ ]` allowed in parameter names but also separators or comment markers. | Tests |
@@ -19,7 +19,7 @@ unless marked.
 | A-12 | Which cards are allowed inside `.if` blocks. | Manual 2.13 and tests |
 | A-13 | `U` means URC line or XSPICE digital block. | Disambiguation rule |
 | A-14 | `POLY` coefficient ordering and node-pair counting. | Spec page |
-| A-15 | `R`, `C`, `L`: value versus model name in the first field. | Rule: parses as number or not |
+| A-15 | `R`, `C`, `L`: value versus model name in the first field. **ngspice 42:** a bare word that names a parameter is also replaced by its value (EX-PARAM-1), so a word can be value, model or parameter; the AST keeps it as `Ident`. | Rule: number, else look up |
 | A-16 | `Q` with 3, 4 or 5 nodes: needs a model symbol table. | Decision: allow semantic lookup |
 | A-17 | Order and optionality of `DC`, `AC`, `DISTOF`, function on V/I sources. | Tests |
 | A-18 | `X` call: where nodes end and `params:` begins. | Manual 2.9.3 |

@@ -250,3 +250,182 @@ R2 b 0 1k
 * expect: v(a) = 6
 * expect: v(b) = 6
 ```
+
+### Pass 1, observed with `listing logical`
+
+These examples show what ngspice 42 does to the text before parsing, using its
+`listing logical` command (a documented command; see
+[../sources/README.md](../sources/README.md), `NGS-42` 17.5). The expected
+output comes from **observation**, not from the manuals, and it contains
+ngspice quirks that are not part of any rule here:
+
+- `listing` prints every name in lower case, hides comment lines, and hides a
+  title that begins with `*`.
+- ngspice adds a line `.global gnd` after the title.
+- Line numbers are not stable, so the doctest compares text only, with white
+  space runs collapsed.
+
+Comment lines and blank lines are dropped.
+
+```spice-test id=P1-COMMENT-1 deck=full listing=logical dialect=ngspice
+title text
+* a comment
+R1 a 0 1k
+
+* another comment
+
+R2 a 0 2k
+.end
+```
+
+```spice-listing for=P1-COMMENT-1
+title text
+.global gnd
+r1 a 0 1k
+r2 a 0 2k
+.end
+```
+
+All three end-of-line comment forms are removed, with or without a blank
+after `$`.
+
+```spice-test id=P1-EOL-1 deck=full listing=logical dialect=ngspice
+t
+R1 a 0 1k ; semicolon
+R2 a 0 1k $ dollar
+R3 a 0 1k // slashes
+R4 a 0 1k $nospace
+.end
+```
+
+```spice-listing for=P1-EOL-1
+t
+.global gnd
+r1 a 0 1k
+r2 a 0 1k
+r3 a 0 1k
+r4 a 0 1k
+.end
+```
+
+Case is folded, and numbers are kept as text.
+
+```spice-test id=P1-CASE-1 deck=full listing=logical dialect=ngspice
+t
+R1 A 0 1K
+Vx NODE1 0 DC 5
+.end
+```
+
+```spice-listing for=P1-CASE-1
+t
+.global gnd
+r1 a 0 1k
+vx node1 0 dc 5
+.end
+```
+
+Leading blanks and tabs are ignored in ngspice. (SPICE3 and Xyce treat such
+a line as a comment, A-25.)
+
+```spice-test id=P1-WS-1 deck=full listing=logical dialect=ngspice
+t
+   R1 a 0 1k
+	R2 a 0 1k
+.end
+```
+
+```spice-listing for=P1-WS-1
+t
+.global gnd
+r1 a 0 1k
+r2 a 0 1k
+.end
+```
+
+Continuation lines are joined. In ngspice a `+` line still continues the
+card when a comment line or a blank line comes between (this settles part of
+A-03 for ngspice only).
+
+```spice-test id=P1-CONT-1 deck=full listing=logical dialect=ngspice
+t
+R1 a 0 1k
++ tc1=0.001
++ tc2=1u
+R2 a 0 1k
+* comment between
++ tc1=0.002
+R3 a 0 1k
+
++ tc1=0.003
+.end
+```
+
+```spice-listing for=P1-CONT-1
+t
+.global gnd
+r1 a 0 1k tc1=0.001 tc2=1u
+r2 a 0 1k tc1=0.002
+r3 a 0 1k tc1=0.003
+.end
+```
+
+A line ending in two backslashes continues on the next line (ngspice only).
+
+```spice-test id=P1-BSLASH-1 deck=full listing=logical dialect=ngspice
+t
+R1 a 0 \\
+1k
+R2 a 0 1k
+.end
+```
+
+```spice-listing for=P1-BSLASH-1
+t
+.global gnd
+r1 a 0 1k
+r2 a 0 1k
+.end
+```
+
+A `.title` line replaces the first line and is itself removed.
+
+```spice-test id=P1-TITLE-1 deck=full listing=logical dialect=ngspice
+first line
+R1 a 0 1k
+.title replaced title
+.end
+```
+
+```spice-listing for=P1-TITLE-1
+replaced title
+.global gnd
+r1 a 0 1k
+.end
+```
+
+`.include` inserts the file's lines at that point (the card line itself
+does not appear).
+
+```spice-file name=inc2.cir
+R9 a 0 9k
+R8 a 0 8k
+```
+
+```spice-test id=P1-INC-1 deck=full listing=logical dialect=ngspice uses=inc2.cir
+t
+R1 a 0 1k
+.include inc2.cir
+R2 a 0 2k
+.end
+```
+
+```spice-listing for=P1-INC-1
+t
+.global gnd
+r1 a 0 1k
+r9 a 0 9k
+r8 a 0 8k
+r2 a 0 2k
+.end
+```
