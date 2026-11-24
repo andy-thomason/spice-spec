@@ -90,9 +90,14 @@ decides, not the tokenizer.
 1. Optional sign `+` or `-`.
 2. Mantissa: digits with an optional `.` and more digits, or `.` and digits.
    If there is no mantissa, the word is not numeric.
-3. Optional exponent: `e` (or, observed in ngspice, `d`), optional sign, one
-   or more digits. If no digits follow the marker, the exponent is absent
-   and the marker becomes part of the ignored tail (`1e` is 1).
+3. Optional exponent: `e`, optional sign, one or more digits. If no digits
+   follow, there is no exponent, but the marker and its sign are **skipped**
+   (not part of the tail), and the scale factor in step 4 is still looked
+   for after them: `1e` is 1, `5eu` is 5e-6, `5e+meg` is 5e6 (observed on
+   ngspice 42). In ngspice, `d` is also an exponent marker, but unsigned:
+   `1D3` is 1000, `1dk` is 1000, and a numeric word that has a `d` followed
+   by a sign anywhere in it, even in the ignored tail (`1D-3`, `1kD-2`), is
+   an error that stops the run (observed).
 4. Optional scale factor, **longest match**: `meg`, `mil`, `t`, `g`, `k`,
    `m`, `u`, `n`, `p`, `f`, and `a` in dialects that read atto. Case is
    ignored.
@@ -110,7 +115,7 @@ reproduce the source.
 |--------|--------|---------|------|--------|
 | Line starting with white space | comment | ignored, line parsed | comment | pass 1, P3 |
 | Scale factor `a` (atto) | no | yes | no (amperes unless `-hspice-ext units`) | 01-lexical |
-| Exponent marker `d` | not documented | yes (observed) | not read | this file |
+| Exponent marker `d` | not documented | yes, digits only; `d` followed by a sign anywhere in a numeric word is an error (observed) | not read | this file |
 | `//` and `$` end-of-line comments | no | yes | `;` only documented | pass 1, P8 |
 | Backslash continuation | no | yes | not read | pass 1, P7 |
 
@@ -193,6 +198,33 @@ R4 d 0 1k
 * expect: v(b) = 1
 * expect: v(c) = 1000
 * expect: v(d) = 1
+```
+
+A marker with no digits is skipped and the scale factor after it still
+applies. `d` is an unsigned exponent marker in ngspice; a sign after it is an
+error.
+
+```spice-test id=TOK-NUM-5 covers=exponent dialect=ngspice
+V1 a 0 5eu
+V2 b 0 5e-u
+V3 c 0 5e+meg
+V4 d 0 1dk
+V5 e 0 10emil
+R1 a 0 1k
+R2 b 0 1k
+R3 c 0 1k
+R4 d 0 1k
+R5 e 0 1k
+* expect: v(a) = 5e-6
+* expect: v(b) = 5e-6
+* expect: v(c) = 5e6
+* expect: v(d) = 1000
+* expect: v(e) = 2.54e-4
+```
+
+```spice-test id=TOK-NUM-6 dialect=ngspice expect=reject
+V1 a 0 1D-3
+R1 a 0 1k
 ```
 
 Longest match on scale factors: `m` followed by letters is milli, `mil` is

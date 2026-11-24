@@ -82,6 +82,23 @@ all assistant output goes through the overlap audit and human review; and
 tests are original circuits with hand-calculated expected values where
 possible. The residual risk is stated here and not hidden.
 
+## Separate implementation projects
+
+An implementation of the spec is written as a **separate project**, under
+the same rules, so that the spec is the only thing connecting the two.
+
+- The implementers' inputs are the spec (`grammar/`, `spec/`), the
+  conformance tests, and published documentation. They do not read simulator
+  source code and make the same declaration as other contributors.
+- They do **not** read or reuse `refimpl/` (or any code the spec authors
+  wrote). It is spec-validation tooling, and copying it would hide spec gaps
+  that an independent implementation should expose. `tools/doctest.py` and the
+  tests themselves may be used.
+- The spec authors do not read the implementation's code to settle a spec
+  question. The decision goes into the spec text.
+- Questions and bug reports go to the spec repo as issues or pull requests,
+  with an original test case. The answer is a change to the spec.
+
 ## Status of the existing repo
 
 An audit on 2026-11-24 compared all text, YAML and netlists in the repo
