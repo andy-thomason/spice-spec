@@ -12,6 +12,7 @@ unless noted). No text is copied from any of them.
 | `NGS-42` | Ngspice User's Manual | 42 (Debian package `ngspice-doc` 42+ds-3build1, file `manual.pdf`) | https://ngspice.sourceforge.io/docs.html (older manuals listed there) | Chapters 2, 3, 4, 5.1 and the analysis chapter read |
 | `NGS-47` | Ngspice User's Manual | 47+ (development), dated 2026-11-15 | https://ngspice.sourceforge.io/docs/ngspice-manual.pdf | Used only to map section numbers (see below) |
 | `XYC-REF` | Xyce Parallel Electronic Simulator Reference Guide, SAND2025-05993 | 7.10 | https://xyce.sandia.gov/download/2068/ (link from https://xyce.sandia.gov/documentation-tutorials/ ) | Searched, selected sections read |
+| `XYC-BLD` | Xyce build documentation: building guide https://xyce.sandia.gov/documentation-tutorials/building-guide/ and `INSTALL.md` of the release tag https://github.com/Xyce/Xyce/blob/Release-7.10.0/INSTALL.md | 7.10 | as listed | Read, to build Xyce (`tools/xyce/Dockerfile`) |
 | `XYC-UG` | Xyce Users' Guide, SAND2025-05995 | 7.10 | https://xyce.sandia.gov/download/1756/ | Downloaded, not yet read |
 | `HSP` | Synopsys HSPICE documentation | not accessed | https://www.synopsys.com (login required) | **Not read.** HSPICE statements in this repo come only from `XYC-REF` or are marked "from memory". |
 
