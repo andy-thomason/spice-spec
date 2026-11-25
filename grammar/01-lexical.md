@@ -177,7 +177,7 @@ the example is a bug to investigate. Examples run as doctests on ngspice
 
 A signed number with a fraction and an exponent.
 
-```spice-test id=LEX-NUM-1 covers=number,sign,mantissa,exponent,value
+```spice-test id=LEX-NUM-1 covers=number,sign,mantissa,exponent,value dialect=common
 V1 a 0 -1.5e-3
 R1 a 0 1k
 * expect: v(a) = -1.5e-3
@@ -185,7 +185,7 @@ R1 a 0 1k
 
 Scale factors; letters after a number or a scale factor are ignored.
 
-```spice-test id=LEX-NUM-2 covers=scale
+```spice-test id=LEX-NUM-2 covers=scale dialect=ngspice
 V1 a 0 2k
 V2 b 0 3MEGohm
 V3 c 0 10Volts
@@ -210,7 +210,7 @@ R1 a 0 1k
 
 Names are free-form. Node `0` and node `00` are different nodes; `=`, commas and parentheses are separators.
 
-```spice-test id=LEX-SEP-1 covers=device-name,name-char,node-name
+```spice-test id=LEX-SEP-1 covers=device-name,name-char,node-name dialect=common
 V_in 1 0 1
 V_two 00 0 2
 Rload_1 1 0 1k
@@ -221,7 +221,7 @@ Rload_2 00 0 1k
 
 Separators: these two lines are equal. `DC=3` and `DC 3` are the same tokens.
 
-```spice-test id=LEX-SEP-2
+```spice-test id=LEX-SEP-2 dialect=ngspice
 V1 a 0 DC=3
 V2 b 0 DC 3
 R1 a 0 1k
@@ -232,7 +232,7 @@ R2 b 0 1k
 
 A parameter name and a braced expression.
 
-```spice-test id=LEX-PARAM-1 covers=param-name,param-card,param-assign,braced dialect=ngspice
+```spice-test id=LEX-PARAM-1 covers=param-name,param-card,param-assign,braced dialect=common
 .param my_p1=3
 V1 a 0 {my_p1*2}
 R1 a 0 1k
@@ -241,7 +241,7 @@ R1 a 0 1k
 
 A quoted expression is evaluated at expansion time. A bare expression in a behavioral source is evaluated during analysis.
 
-```spice-test id=LEX-EXPR-1 covers=quoted,bare dialect=ngspice
+```spice-test id=LEX-EXPR-1 covers=quoted,bare dialect=common
 .param q='2*3'
 V1 a 0 'q'
 B1 b 0 V=2*3
@@ -267,7 +267,7 @@ ngspice quirks that are not part of any rule here:
 
 Comment lines and blank lines are dropped.
 
-```spice-test id=P1-COMMENT-1 deck=full listing=logical dialect=ngspice
+```spice-test id=P1-COMMENT-1 dialect=ngspice deck=full listing=logical
 title text
 * a comment
 R1 a 0 1k
@@ -289,7 +289,7 @@ r2 a 0 2k
 All three end-of-line comment forms are removed, with or without a blank
 after `$`.
 
-```spice-test id=P1-EOL-1 deck=full listing=logical dialect=ngspice
+```spice-test id=P1-EOL-1 dialect=ngspice deck=full listing=logical
 t
 R1 a 0 1k ; semicolon
 R2 a 0 1k $ dollar
@@ -310,7 +310,7 @@ r4 a 0 1k
 
 Case is folded, and numbers are kept as text.
 
-```spice-test id=P1-CASE-1 deck=full listing=logical dialect=ngspice
+```spice-test id=P1-CASE-1 dialect=ngspice deck=full listing=logical
 t
 R1 A 0 1K
 Vx NODE1 0 DC 5
@@ -328,7 +328,7 @@ vx node1 0 dc 5
 Leading blanks and tabs are ignored in ngspice. (SPICE3 and Xyce treat such
 a line as a comment, A-25.)
 
-```spice-test id=P1-WS-1 deck=full listing=logical dialect=ngspice
+```spice-test id=P1-WS-1 dialect=ngspice deck=full listing=logical
 t
    R1 a 0 1k
 	R2 a 0 1k
@@ -347,7 +347,7 @@ Continuation lines are joined. In ngspice a `+` line still continues the
 card when a comment line or a blank line comes between (this settles part of
 A-03 for ngspice only).
 
-```spice-test id=P1-CONT-1 deck=full listing=logical dialect=ngspice
+```spice-test id=P1-CONT-1 dialect=ngspice deck=full listing=logical
 t
 R1 a 0 1k
 + tc1=0.001
@@ -372,7 +372,7 @@ r3 a 0 1k tc1=0.003
 
 A line ending in two backslashes continues on the next line (ngspice only).
 
-```spice-test id=P1-BSLASH-1 deck=full listing=logical dialect=ngspice
+```spice-test id=P1-BSLASH-1 dialect=ngspice deck=full listing=logical
 t
 R1 a 0 \\
 1k
@@ -390,7 +390,7 @@ r2 a 0 1k
 
 A `.title` line replaces the first line and is itself removed.
 
-```spice-test id=P1-TITLE-1 deck=full listing=logical dialect=ngspice
+```spice-test id=P1-TITLE-1 dialect=ngspice deck=full listing=logical
 first line
 R1 a 0 1k
 .title replaced title
@@ -412,7 +412,7 @@ R9 a 0 9k
 R8 a 0 8k
 ```
 
-```spice-test id=P1-INC-1 deck=full listing=logical dialect=ngspice uses=inc2.cir
+```spice-test id=P1-INC-1 dialect=ngspice deck=full listing=logical uses=inc2.cir
 t
 R1 a 0 1k
 .include inc2.cir

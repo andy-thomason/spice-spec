@@ -7,6 +7,15 @@ expression chapter, partly read: contexts, braces, `log`), 6.1.14. Tag
 three expression parsers (front end, `.param`, control language), so this
 file describes the netlist one.
 
+**Tags after the Xyce 7.10 comparison**
+([../spec/11-compat/xyce-vs-ngspice.md](../spec/11-compat/xyce-vs-ngspice.md)).
+`common`: the four arithmetic operators, parentheses, unary minus on a
+simple operand, comparison and `&&`/`||`, the ternary, and the usual functions
+on in-range arguments (examples EXPR-1 to EXPR-6, EXPR-10). `dialect:ngspice`
+(Xyce differs): `^` (Xyce: logical xor), `**` associativity and sign handling,
+`!`, `\`, the `log` base (Xyce: base 10), `nint` ties, and division by zero or
+`sqrt` of a negative (Xyce: 1e50 and 0, no error).
+
 ## Grammar
 
 ```abnf
@@ -113,7 +122,7 @@ the example is a bug to investigate. Examples run as doctests on ngspice
 
 Precedence: multiplication binds tighter than addition.
 
-```spice-test id=EXPR-1 covers=expr,sum,term,factor,atom dialect=ngspice
+```spice-test id=EXPR-1 covers=expr,sum,term,factor,atom dialect=common
 .param p={2+3*4}
 V1 a 0 {p}
 R1 a 0 1k
@@ -122,7 +131,7 @@ R1 a 0 1k
 
 Power, written with `**`.
 
-```spice-test id=EXPR-2 covers=power dialect=ngspice
+```spice-test id=EXPR-2 covers=power dialect=common
 V1 a 0 {2**3}
 R1 a 0 1k
 * expect: v(a) = 8
@@ -130,7 +139,7 @@ R1 a 0 1k
 
 Unary minus.
 
-```spice-test id=EXPR-3 covers=signed dialect=ngspice
+```spice-test id=EXPR-3 covers=signed dialect=common
 V1 a 0 {-3+5}
 R1 a 0 1k
 * expect: v(a) = 2
@@ -138,7 +147,7 @@ R1 a 0 1k
 
 The ternary operator.
 
-```spice-test id=EXPR-4 covers=ternary dialect=ngspice
+```spice-test id=EXPR-4 covers=ternary dialect=common
 V1 a 0 {1 > 0 ? 10 : 20}
 R1 a 0 1k
 * expect: v(a) = 10
@@ -146,7 +155,7 @@ R1 a 0 1k
 
 Logical and comparison operators give exactly 1 or 0.
 
-```spice-test id=EXPR-5 covers=oror,andand,compare dialect=ngspice
+```spice-test id=EXPR-5 covers=oror,andand,compare dialect=common
 V1 a 0 {(1 && 0) || 1}
 V2 b 0 {3 <= 4}
 R1 a 0 1k
@@ -157,7 +166,7 @@ R2 b 0 1k
 
 A function call and a nested function.
 
-```spice-test id=EXPR-6 dialect=ngspice
+```spice-test id=EXPR-6 dialect=common
 V1 a 0 {sqrt(16) + abs(-1)}
 R1 a 0 1k
 * expect: v(a) = 5
@@ -222,7 +231,7 @@ Arithmetic is IEEE and only the final value must be finite (rule 7): the
 division by zero here is not an error, and the same expression as the whole
 value is.
 
-```spice-test id=EXPR-10 dialect=ngspice
+```spice-test id=EXPR-10 dialect=common
 V1 a 0 {7 == 4/0}
 V2 b 0 {ln(0) > 1}
 R1 a 0 1k

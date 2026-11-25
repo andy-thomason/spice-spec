@@ -155,6 +155,7 @@ spec page marks them as ngspice behavior.
 3. A netlist that must run on both tools has to avoid: `1D3`-style exponents,
    unit words after numbers, `DC=value`, parentheses around element values,
    `.if`, `.temp`, `^` as power, `!`, `\`, and `AM`.
-4. The doctest examples marked `dialect=ngspice` are correctly so marked. A
-   future set of examples written for the common core can be run on both
-   tools with `tools/matrix.py`.
+4. The doctests are now tagged from the matrix: `dialect=common` (68) passes
+   on both tools, `dialect=ngspice` (56) does not. An example Xyce accepts
+   only by ignoring a card with a warning counts as `ngspice`. Retag after
+   each matrix run.

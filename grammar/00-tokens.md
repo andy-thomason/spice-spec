@@ -10,6 +10,14 @@ Sources: separators and numbers from `SP3-UG` (Circuit Description) and
 `tools/doctest.py`) and is `dialect:ngspice`. Registry:
 [../sources/README.md](../sources/README.md).
 
+**Tags after the Xyce 7.10 comparison**
+([../spec/11-compat/xyce-vs-ngspice.md](../spec/11-compat/xyce-vs-ngspice.md)).
+`common`: a number is digits, optional fraction, optional exponent, and an
+optional scale suffix; groups; `;` comments; `.include`. `dialect:ngspice`
+(Xyce rejects or reads differently): ignoring the number tail, `a` as atto,
+`d` exponents, `=` as a separator, parentheses around element values, and
+leading white space (Xyce: comment).
+
 ## Where tokenization sits
 
 ```text
@@ -222,7 +230,7 @@ R5 e 0 1k
 * expect: v(e) = 2.54e-4
 ```
 
-```spice-test id=TOK-NUM-6 dialect=ngspice expect=reject
+```spice-test id=TOK-NUM-6 dialect=common expect=reject
 V1 a 0 1D-3
 R1 a 0 1k
 ```
@@ -260,7 +268,7 @@ V1 a 0 5 * trailing
 R1 a 0 1k
 ```
 
-```spice-test id=TOK-COM-2 dialect=ngspice
+```spice-test id=TOK-COM-2 dialect=common
 V1 a 0 5 ; semicolon
 V2 b 0 6 $ dollar
 V3 c 0 7 // slashes
@@ -284,13 +292,13 @@ comment, A-25.)
 
 A braced group may hold blanks. An unterminated one is an error.
 
-```spice-test id=TOK-GRP-1 dialect=ngspice
+```spice-test id=TOK-GRP-1 dialect=common
 V1 a 0 {2 * 3}
 R1 a 0 1k
 * expect: v(a) = 6
 ```
 
-```spice-test id=TOK-GRP-2 dialect=ngspice expect=reject
+```spice-test id=TOK-GRP-2 dialect=common expect=reject
 V1 a 0 {2 * 3
 R1 a 0 1k
 ```
@@ -302,7 +310,7 @@ the first blank.
 R1 a 0 1k
 ```
 
-```spice-test id=TOK-INC-1 dialect=ngspice uses="my inc.cir"
+```spice-test id=TOK-INC-1 dialect=common uses="my inc.cir"
 .include "my inc.cir"
 I1 0 a 1m
 * expect: v(a) = 1

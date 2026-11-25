@@ -41,9 +41,11 @@ Every rule carries a tag from docs/design.md section 4:
 - `core`: documented in the SPICE3 user guide (`SP3-UG`). Note this is the
   SPICE3 documentation, not the SPICE3f5 source; nothing has been run
   against SPICE3f5 itself.
-- `common`: documented in both ngspice and Xyce. The documentation was
-  compared, but meaning was not tested on Xyce. HSPICE documentation was not
-  read, so no rule is marked as agreed by all three.
+- `common`: documented in both ngspice and Xyce. Where a doctest covers the
+  rule, it is tagged `dialect=common` only if it passes on ngspice 42 **and**
+  Xyce 7.10 (an example Xyce accepts only by ignoring a card with a warning
+  does not count). HSPICE documentation was not read, so no rule is marked as
+  agreed by all three.
 - `dialect:ngspice`, `dialect:xyce`, `dialect:hspice`: one tool only.
 
 Where this draft says only "ngspice", the rule is `dialect:ngspice` until

@@ -14,6 +14,16 @@ original and run with `tools/doctest.py`. They are **non-normative**: the text
 is the specification, and an example that disagrees with it is a bug to
 investigate.
 
+**Tags after the Xyce 7.10 comparison**
+([../11-compat/xyce-vs-ngspice.md](../11-compat/xyce-vs-ngspice.md)). The
+formulas for `PULSE`, `SIN`, `EXP`, `PWL` (with `r=`) and `SFFM`, where all
+their parameters are given, are `common`: both tools produce the same values.
+These are `dialect:ngspice` (Xyce differs): the value used for DC and
+operating-point analysis (time-zero value; Xyce uses the `DC` field, 0 if
+none), a zero `tr`/`tf` (Xyce: instantaneous), the `PULSE` pulse count (Xyce:
+ignored), `SIN` with no frequency (Xyce: error), `PWL td=` (Xyce: silent exit
+1) and `AM` (not in Xyce).
+
 ## Conventions
 
 - `t` is time in seconds. `tstep` and `tstop` are the first two fields of the
@@ -65,7 +75,7 @@ on, `np` times in all if `np` is given. The time-zero value is `v1`.
 The pulse is high from 2 µs to 4 µs, low again from 5 µs, and the next pulse
 starts at 11 µs:
 
-```spice-test id=WF-PULSE-1 dialect=ngspice
+```spice-test id=WF-PULSE-1 dialect=common
 V1 a 0 pulse(0 1 1u 1u 1u 2u 10u)
 R1 a 0 1k
 .tran 0.05u 15u
@@ -81,7 +91,7 @@ R1 a 0 1k
 Omitted parameters take their defaults from `.tran`: the rise is one `tstep`
 and the pulse stays high to `tstop`.
 
-```spice-test id=WF-PULSE-2 dialect=ngspice
+```spice-test id=WF-PULSE-2 dialect=common
 V1 a 0 pulse(0 1)
 R1 a 0 1k
 .tran 0.1u 10u
@@ -144,7 +154,7 @@ The documents say `vo` here; the two differ whenever `phase` is not a multiple
 of 180°. The time-zero value is therefore `vo + va·sin(phase)` (when `td` is
 zero or the delay is positive, the same expression).
 
-```spice-test id=WF-SIN-1 dialect=ngspice
+```spice-test id=WF-SIN-1 dialect=common
 V1 a 0 sin(1 2 1k)
 R1 a 0 1k
 .tran 2u 1m
@@ -156,7 +166,7 @@ R1 a 0 1k
 With a delay, damping and a phase. Before the delay the value is
 `1 + 2·sin(30°) = 2`, not `vo = 1`:
 
-```spice-test id=WF-SIN-2 dialect=ngspice
+```spice-test id=WF-SIN-2 dialect=common
 V1 a 0 sin(1 2 1k 0.2m 2k 30)
 R1 a 0 1k
 .tran 2u 1.2m
@@ -205,7 +215,7 @@ The time-zero value is `v1` when `td1 > 0`. With the default `td2`, the fall
 begins one step after the rise, so a source with only `v1` and `v2` ends near
 `v1` again.
 
-```spice-test id=WF-EXP-1 dialect=ngspice
+```spice-test id=WF-EXP-1 dialect=common
 V1 a 0 exp(0 1 0.1m 0.2m 0.5m 0.1m)
 R1 a 0 1k
 .tran 2u 1.2m
@@ -233,7 +243,7 @@ accepts it and the result is not meaningful).
 - `r` and `td` are accepted on voltage sources; for current sources the
   documents say they are not available (open, A-19).
 
-```spice-test id=WF-PWL-1 dialect=ngspice
+```spice-test id=WF-PWL-1 dialect=common
 V1 a 0 pwl(1u 1 2u 3 4u 3 5u 0)
 R1 a 0 1k
 .tran 0.05u 8u
@@ -246,7 +256,7 @@ R1 a 0 1k
 
 Repeat from the point at 1 µs; the repeating part is 2 µs long:
 
-```spice-test id=WF-PWL-2 dialect=ngspice
+```spice-test id=WF-PWL-2 dialect=common
 V1 a 0 pwl(0 0 1u 1 2u 0 3u 2) r=1u
 R1 a 0 1k
 .tran 0.05u 8u
@@ -296,7 +306,7 @@ There is no delay. The time-zero value is
 `vo + va·sin(phasec + mdi·sin(phases))`. The SPICE3 form has five parameters
 (no phases); the two phases are an ngspice addition.
 
-```spice-test id=WF-SFFM-1 dialect=ngspice
+```spice-test id=WF-SFFM-1 dialect=common
 V1 a 0 sffm(1 2 10k 3 1k)
 R1 a 0 1k
 .tran 1u 1m

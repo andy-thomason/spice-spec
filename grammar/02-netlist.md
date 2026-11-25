@@ -146,7 +146,7 @@ R1 a 0 2k
 
 A complete deck: title line, cards, and `.end`.
 
-```spice-test id=NET-DECK-1 covers=deck,title-line,end-line,card deck=full
+```spice-test id=NET-DECK-1 covers=deck,title-line,end-line,card dialect=common deck=full
 This line is the title and may say anything
 * a comment line
 V1 a 0 1
@@ -156,7 +156,7 @@ R1 a 0 1k
 
 A divider as a subcircuit. `0` is global, so the subcircuit has two ports.
 
-```spice-test id=NET-SUB-1 covers=subckt-def,subckt-call
+```spice-test id=NET-SUB-1 covers=subckt-def,subckt-call dialect=common
 .subckt half in out
 R1 in out 1k
 R2 out 0 1k
@@ -168,7 +168,7 @@ X1 a b half
 
 A diode model; `.model name type (params)`.
 
-```spice-test id=NET-MODEL-1 covers=model-card,model-type
+```spice-test id=NET-MODEL-1 covers=model-card,model-type dialect=common
 .model dmod d(is=1e-14)
 I1 0 a 1m
 D1 a 0 dmod
@@ -186,7 +186,7 @@ R1 a 0 1k
 
 A user function.
 
-```spice-test id=NET-FUNC-1 covers=func-card dialect=ngspice
+```spice-test id=NET-FUNC-1 covers=func-card dialect=common
 .func double(x) {2*x}
 V1 a 0 {double(3)}
 R1 a 0 1k
@@ -195,7 +195,7 @@ R1 a 0 1k
 
 A global node is visible inside subcircuits without being a port.
 
-```spice-test id=NET-GLOBAL-1 covers=global-card dialect=ngspice
+```spice-test id=NET-GLOBAL-1 covers=global-card dialect=common
 .global vdd
 .subckt load out
 R1 vdd out 1k
@@ -217,7 +217,7 @@ R1 a 0 1k tc1=0.001
 
 `.include` inserts the file at that point.
 
-```spice-test id=NET-INC-1 covers=include-card dialect=ngspice uses=inc.cir
+```spice-test id=NET-INC-1 covers=include-card dialect=common uses=inc.cir
 .include inc.cir
 I1 0 a 1m
 * expect: v(a) = 1
@@ -225,7 +225,7 @@ I1 0 a 1m
 
 `.lib file name` selects one library section from a file.
 
-```spice-test id=NET-LIB-1 covers=lib-use,lib-def dialect=ngspice uses=lib.lib
+```spice-test id=NET-LIB-1 covers=lib-use,lib-def dialect=common uses=lib.lib
 .lib lib.lib mylib
 I1 0 a 1m
 * expect: v(a) = 2
@@ -257,7 +257,7 @@ parameters are printed as 16-digit floats.
 A subcircuit instance is replaced by its elements, named
 `<letter>.<instance>.<element>`. Node `0` stays global.
 
-```spice-test id=EX-FLAT-1 deck=full listing=expand dialect=ngspice
+```spice-test id=EX-FLAT-1 dialect=ngspice deck=full listing=expand
 t
 .subckt half in out
 R1 in out 1k
@@ -279,7 +279,7 @@ r.x1.r2 b 0 1k
 Internal nodes are prefixed with the instance name and a dot, so two
 instances do not share them.
 
-```spice-test id=EX-NODE-1 deck=full listing=expand dialect=ngspice
+```spice-test id=EX-NODE-1 dialect=ngspice deck=full listing=expand
 t
 .subckt s in out
 R1 in m 1k
@@ -301,7 +301,7 @@ r.x2.r2 x2.m c 1k
 
 Nested instances nest the names.
 
-```spice-test id=EX-NEST-1 deck=full listing=expand dialect=ngspice
+```spice-test id=EX-NEST-1 dialect=ngspice deck=full listing=expand
 t
 .subckt inner p q
 R1 p q 1k
@@ -324,7 +324,7 @@ r.x1.r9 a b 2k
 A subcircuit defined inside another one, closed with an unnamed `.ends`, is
 usable inside it. Note the doubled prefix in the result.
 
-```spice-test id=EX-ENDS-1 deck=full listing=expand dialect=ngspice
+```spice-test id=EX-ENDS-1 dialect=ngspice deck=full listing=expand
 t
 .subckt outer p q
 .subckt inner a b
@@ -346,7 +346,7 @@ Parameters: braced expressions are evaluated. A bare parameter name used as
 a value is also replaced by its value in ngspice, so a name in a value
 position can be a parameter and not only a model name (A-15).
 
-```spice-test id=EX-PARAM-1 deck=full listing=expand dialect=ngspice
+```spice-test id=EX-PARAM-1 dialect=ngspice deck=full listing=expand
 t
 .param rv=2k
 R1 a 0 {rv}
@@ -365,7 +365,7 @@ r3 a 0 2.000000000000000e+03
 
 Subcircuit parameters have defaults and can be overridden at the call.
 
-```spice-test id=EX-PARAMS-1 deck=full listing=expand dialect=ngspice
+```spice-test id=EX-PARAMS-1 dialect=ngspice deck=full listing=expand
 t
 .subckt s in out params: r=1k
 R1 in out {r}
@@ -385,7 +385,7 @@ r.x2.r1 b c 2.000000000000000e+03
 A model defined inside a subcircuit is renamed per instance, with a colon
 (not a dot) in the new name.
 
-```spice-test id=EX-MODEL-1 deck=full listing=expand dialect=ngspice
+```spice-test id=EX-MODEL-1 dialect=ngspice deck=full listing=expand
 t
 .subckt s in out
 .model dm d(is=1e-14)
@@ -404,7 +404,7 @@ d.x1.d1 a b x1:dm
 
 A global node is not renamed.
 
-```spice-test id=EX-GLOBAL-1 deck=full listing=expand dialect=ngspice
+```spice-test id=EX-GLOBAL-1 dialect=ngspice deck=full listing=expand
 t
 .global vdd
 .subckt s out
@@ -422,7 +422,7 @@ r.x1.r1 vdd o 1k
 
 `.if` keeps only the branch whose condition holds.
 
-```spice-test id=EX-IF-1 deck=full listing=expand dialect=ngspice
+```spice-test id=EX-IF-1 dialect=ngspice deck=full listing=expand
 t
 .if (1 > 2)
 R1 a 0 1k
@@ -440,7 +440,7 @@ r1 a 0 2k
 
 `.func` calls are evaluated in braces.
 
-```spice-test id=EX-FUNC-1 deck=full listing=expand dialect=ngspice
+```spice-test id=EX-FUNC-1 dialect=ngspice deck=full listing=expand
 t
 .func double(x) {2*x}
 R1 a 0 {double(3)}
@@ -455,7 +455,7 @@ r1 a 0 6.000000000000000e+00
 
 Subcircuit names are looked up without regard to case.
 
-```spice-test id=EX-CASE-1 deck=full listing=expand dialect=ngspice
+```spice-test id=EX-CASE-1 dialect=ngspice deck=full listing=expand
 t
 .subckt s in out
 R1 in out 1k
@@ -473,7 +473,7 @@ r.x1.r1 a b 1k
 Instance names are case-insensitive too, so two instances that differ only
 in case collide and ngspice reports an error.
 
-```spice-test id=EX-DUP-1 dialect=ngspice expect=reject
+```spice-test id=EX-DUP-1 dialect=common expect=reject
 .subckt s in out
 R1 in out 1k
 .ends

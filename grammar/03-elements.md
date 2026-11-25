@@ -192,7 +192,7 @@ the example is a bug to investigate. Examples run as doctests on ngspice
 
 Plain forms: value, and the `r=` keyword. Two 1k in parallel give 500 ohm.
 
-```spice-test id=EL-R-1 covers=resistor,r-simple,node
+```spice-test id=EL-R-1 covers=resistor,r-simple,node dialect=common
 I1 0 a 1m
 R1 a 0 1k
 R2 a 0 r=1k
@@ -201,7 +201,7 @@ R2 a 0 r=1k
 
 Resistor from a model: `rsh*l/w` = 100*10.
 
-```spice-test id=EL-R-2 covers=r-semi,r-geom dialect=ngspice
+```spice-test id=EL-R-2 covers=r-semi,r-geom dialect=common
 .model rm r(rsh=100)
 I1 0 a 1m
 R1 a 0 rm l=10u w=1u
@@ -210,7 +210,7 @@ R1 a 0 rm l=10u w=1u
 
 `m=2` is a multiplier: two resistors in parallel.
 
-```spice-test id=EL-R-3 covers=r-param dialect=ngspice
+```spice-test id=EL-R-3 covers=r-param dialect=common
 I1 0 a 1m
 R1 a 0 1k m=2
 * expect: v(a) = 0.5
@@ -218,7 +218,7 @@ R1 a 0 1k m=2
 
 A resistor from an expression.
 
-```spice-test id=EL-R-4 covers=r-behav dialect=ngspice
+```spice-test id=EL-R-4 covers=r-behav dialect=common
 I1 0 a 1m
 R1 a 0 r='1k+1k'
 * expect: v(a) = 2
@@ -226,7 +226,7 @@ R1 a 0 r='1k+1k'
 
 A resistor line without a value is ignored with a warning, not an error. (Observed ngspice behavior.)
 
-```spice-test id=EL-R-5 dialect=ngspice expect=warn
+```spice-test id=EL-R-5 dialect=common expect=warn
 V1 a 0 1
 R1 a b
 R2 b 0 1k
@@ -234,14 +234,14 @@ R2 b 0 1k
 
 An unknown keyword parameter is an error. (Observed ngspice behavior.)
 
-```spice-test id=EL-R-6 dialect=ngspice expect=reject
+```spice-test id=EL-R-6 dialect=common expect=reject
 V1 a 0 1
 R1 a 0 1k foo=3
 ```
 
 A capacitor charged by a current: v = i*t/C = 1 V at 1 ms (slightly less through the leak).
 
-```spice-test id=EL-C-1 covers=capacitor
+```spice-test id=EL-C-1 covers=capacitor dialect=common
 I1 0 a 1m
 C1 a 0 1u ic=0
 R1 a 0 1meg
@@ -251,7 +251,7 @@ R1 a 0 1meg
 
 An inductor is a short at DC.
 
-```spice-test id=EL-L-1 covers=inductor
+```spice-test id=EL-L-1 covers=inductor dialect=common
 V1 a 0 1
 L1 a b 1m
 R1 b 0 1k
@@ -260,7 +260,7 @@ R1 b 0 1k
 
 Coupled inductors: with a light load, the voltage ratio is the coupling k. (A voltage source directly across an inductor would be a loop of source and inductor, which SPICE rejects, so the source has a series resistor.)
 
-```spice-test id=EL-K-1 covers=mutual
+```spice-test id=EL-K-1 covers=mutual dialect=common
 Vin s 0 ac 1
 Rs s a 1
 L1 a 0 1m
@@ -273,7 +273,7 @@ K1 L1 L2 0.9
 
 DC value plus an AC magnitude.
 
-```spice-test id=EL-V-1 covers=vsource,isource
+```spice-test id=EL-V-1 covers=vsource,isource dialect=common
 V1 a 0 dc 2 ac 1
 I1 0 b 1m
 R1 a 0 1k
@@ -284,7 +284,7 @@ R2 b 0 1k
 
 Voltage-controlled voltage source, gain 2.
 
-```spice-test id=EL-E-1 covers=vcvs
+```spice-test id=EL-E-1 covers=vcvs dialect=common
 V1 a 0 1
 R1 a 0 1k
 E1 b 0 a 0 2
@@ -294,7 +294,7 @@ R2 b 0 1k
 
 Voltage-controlled current source, 1 mS.
 
-```spice-test id=EL-G-1 covers=vccs
+```spice-test id=EL-G-1 covers=vccs dialect=common
 V1 a 0 2
 R1 a 0 1k
 G1 0 b a 0 1m
@@ -304,7 +304,7 @@ R2 b 0 1k
 
 Current-controlled current source. The control current is that flowing through V1 from its + node to its - node: -1 mA, so the output is -3 V.
 
-```spice-test id=EL-F-1 covers=cccs
+```spice-test id=EL-F-1 covers=cccs dialect=common
 V1 a 0 1
 R1 a 0 1k
 F1 0 b V1 3
@@ -314,7 +314,7 @@ R2 b 0 1k
 
 Current-controlled voltage source, 1 kohm: 1k times -1 mA.
 
-```spice-test id=EL-H-1 covers=ccvs
+```spice-test id=EL-H-1 covers=ccvs dialect=common
 V1 a 0 1
 R1 a 0 1k
 H1 b 0 V1 1k
@@ -324,7 +324,7 @@ R2 b 0 1k
 
 E and G sources with expressions.
 
-```spice-test id=EL-NL-1 covers=nl-e,nl-g dialect=ngspice
+```spice-test id=EL-NL-1 covers=nl-e,nl-g dialect=common
 V1 a 0 1
 R1 a 0 1k
 E1 b 0 vol='v(a)*2'
@@ -347,7 +347,7 @@ R2 b 0 1k
 
 A behavioral source.
 
-```spice-test id=EL-B-1 covers=bsource
+```spice-test id=EL-B-1 covers=bsource dialect=common
 V1 a 0 1
 R1 a 0 1k
 B1 b 0 v=v(a)+1
@@ -357,7 +357,7 @@ R2 b 0 1k
 
 A diode with an area factor: area 2 acts like two in parallel.
 
-```spice-test id=EL-D-1 covers=diode,model
+```spice-test id=EL-D-1 covers=diode,model dialect=common
 .model dmod d(is=1e-14)
 I1 0 a 2m
 D1 a 0 dmod area=2
@@ -366,7 +366,7 @@ D1 a 0 dmod area=2
 
 An NPN bias point: Ib about 10 uA, Ic about 1 mA, Vc about 5 V.
 
-```spice-test id=EL-Q-1 covers=bjt
+```spice-test id=EL-Q-1 covers=bjt dialect=common
 .model qm npn(bf=100)
 Vcc c1 0 10
 Rb c1 b 930k
@@ -377,7 +377,7 @@ Q1 c b 0 qm
 
 An n-JFET with gate and source at ground: id = beta*vto^2 = 4 mA.
 
-```spice-test id=EL-J-1 covers=jfet
+```spice-test id=EL-J-1 covers=jfet dialect=common
 .model jm njf(vto=-2 beta=1m)
 Vdd d1 0 10
 Rd d1 d 1k
@@ -387,7 +387,7 @@ J1 d 0 0 jm
 
 A MESFET line is accepted; no value is asserted.
 
-```spice-test id=EL-Z-1 covers=mesfet dialect=ngspice
+```spice-test id=EL-Z-1 covers=mesfet dialect=common
 .model zm nmf(vto=-2 beta=1m)
 Vdd d1 0 10
 Rd d1 d 1k
@@ -396,7 +396,7 @@ Z1 d 0 0 zm
 
 A level-1 NMOS in saturation: id = kp/2 * w/l * (vgs-vto)^2 = 5 mA.
 
-```spice-test id=EL-M-1 covers=mosfet
+```spice-test id=EL-M-1 covers=mosfet dialect=common
 .model nm nmos(vto=1 kp=1m)
 Vdd d1 0 10
 Vg g 0 2
@@ -407,7 +407,7 @@ M1 d g 0 0 nm w=10u l=1u
 
 A voltage-controlled switch, closed (control 1 V above threshold).
 
-```spice-test id=EL-S-1 covers=vswitch
+```spice-test id=EL-S-1 covers=vswitch dialect=ngspice
 .model sw sw(vt=0.5 vh=0 ron=1 roff=1meg)
 V1 a 0 1
 Vc c 0 1
@@ -418,7 +418,7 @@ R1 b 0 1k
 
 A current-controlled switch is accepted; no value is asserted.
 
-```spice-test id=EL-W-1 covers=iswitch
+```spice-test id=EL-W-1 covers=iswitch dialect=ngspice
 .model cs csw(it=1m ih=0 ron=1 roff=1meg)
 V1 a 0 1
 Vc c 0 1
@@ -429,7 +429,7 @@ R1 b 0 1k
 
 A lossless line at DC passes the voltage through.
 
-```spice-test id=EL-T-1 covers=tline
+```spice-test id=EL-T-1 covers=tline dialect=common
 V1 a 0 1
 T1 a 0 b 0 z0=50 td=1n
 R1 b 0 50
@@ -438,7 +438,7 @@ R1 b 0 50
 
 A lossy line (model type `ltra`) is accepted; no value is asserted.
 
-```spice-test id=EL-O-1 covers=lossy dialect=ngspice
+```spice-test id=EL-O-1 covers=lossy dialect=common
 .model lm ltra(r=1 l=1u c=1p len=0.1)
 V1 a 0 1
 O1 a 0 b 0 lm

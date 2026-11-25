@@ -68,7 +68,7 @@ the example is a bug to investigate. Examples run as doctests on ngspice
 
 PULSE(v1 v2 td tr tf pw per): at 3 us the pulse is high.
 
-```spice-test id=SRC-PULSE-1 covers=pulse,source-function
+```spice-test id=SRC-PULSE-1 covers=pulse,source-function dialect=common
 V1 a 0 pulse(0 1 0 1n 1n 5u 10u)
 R1 a 0 1k
 .tran 100n 3u
@@ -77,7 +77,7 @@ R1 a 0 1k
 
 SIN(vo va freq): at a quarter period the value is the amplitude.
 
-```spice-test id=SRC-SIN-1 covers=sin
+```spice-test id=SRC-SIN-1 covers=sin dialect=common
 V1 a 0 sin(0 1 1k)
 R1 a 0 1k
 .tran 1u 250u
@@ -86,7 +86,7 @@ R1 a 0 1k
 
 EXP(v1 v2 td1 tau1 td2 tau2): rising for 5 time constants, 1-exp(-5).
 
-```spice-test id=SRC-EXP-1 covers=exp
+```spice-test id=SRC-EXP-1 covers=exp dialect=common
 V1 a 0 exp(0 1 0 1m 10 1m)
 R1 a 0 1k
 .tran 10u 5m
@@ -95,7 +95,7 @@ R1 a 0 1k
 
 Piece-wise linear: rises 0 to 2 V in 1 ms.
 
-```spice-test id=SRC-PWL-1 covers=pwl
+```spice-test id=SRC-PWL-1 covers=pwl dialect=common
 V1 a 0 pwl(0 0 1m 2)
 R1 a 0 1k
 .tran 10u 1m
@@ -104,7 +104,7 @@ R1 a 0 1k
 
 SFFM with modulation index 0 is a plain sine at the carrier frequency.
 
-```spice-test id=SRC-SFFM-1 covers=sffm dialect=ngspice
+```spice-test id=SRC-SFFM-1 covers=sffm dialect=common
 V1 a 0 sffm(0 1 1k 0 100)
 R1 a 0 1k
 .tran 1u 250u
