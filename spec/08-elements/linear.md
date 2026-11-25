@@ -5,8 +5,12 @@ is in [../../grammar/03-elements.md](../../grammar/03-elements.md) and the
 analyses that use them are in
 [../07-analyses/analyses.md](../07-analyses/analyses.md).
 
-Sources: `SP3-UG` "Elements"; `NGS-42` chapters on elements (chapter numbers not yet checked); `XYC-REF` chapter 2
-(element cards). Registry: [../../sources/README.md](../../sources/README.md).
+Sources: `SP3-UG` Elements page ("Resistors", "Capacitors", "Inductors",
+"Coupled (Mutual) Inductors", "Linear Dependent Sources", "Independent
+Sources"); `NGS-42` 3.3.1 and 3.3.3 (resistor and model), 3.3.6 (capacitor),
+3.3.10 (inductor), 3.3.12 (coupled inductors), 4.1 (sources), 4.2.1 to 4.2.4
+(linear dependent sources); `XYC-REF` 2.3.4 to 2.3.7 and 2.3.12 to 2.3.15 (the
+same devices). Registry: [../../sources/README.md](../../sources/README.md).
 Rules marked **observed** were measured on ngspice 42 and Xyce 7.10 by the
 examples below. Examples are **non-normative**; the text is the specification.
 
@@ -28,7 +32,8 @@ examples below. Examples are **non-normative**; the text is the specification.
 The temperature rule is `dialect:ngspice` here (Xyce ignores `.temp`, see
 [../11-compat/xyce-vs-ngspice.md](../11-compat/xyce-vs-ngspice.md)): with
 coefficients `tc1` and `tc2`, `R(T) = R0 (1 + tc1 (T - Tnom) + tc2 (T - Tnom)^2)`
-where `Tnom` defaults to 27 degrees Celsius (`SP3-UG`).
+where `Tnom` defaults to 27 degrees Celsius (`SP3-UG` Elements, "Resistors" and "Semiconductor Resistor Model"; `NGS-42`
+3.3.1, 3.3.3).
 
 ```spice-test id=EL-LIN-R-1 covers=resistor dialect=common
 I1 0 a 1m

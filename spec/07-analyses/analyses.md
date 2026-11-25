@@ -6,9 +6,11 @@ what each analysis does with the elaborated netlist
 ([../../grammar/08-elaboration.md](../../grammar/08-elaboration.md)) and what
 it outputs.
 
-Sources: `SP3-UG` "Analyses" and "Initial conditions"; `NGS-42` chapter 15
-(analyses) and 15.2.x (`.ic`, `.nodeset`); `XYC-REF` chapter 6 (analysis
-statements). Registry: [../../sources/README.md](../../sources/README.md).
+Sources: `SP3-UG` Analyses page (".OP", ".DC", ".AC", ".TRAN", "Initial
+Conditions" with ".NODESET" and ".IC"); `NGS-42` 15.1.2 to 15.1.4 (options),
+15.2 (15.2.1 `.NODESET`, 15.2.2 `.IC`), 15.3.1 `.AC`, 15.3.2 `.DC`,
+15.3.5 `.OP`, 15.3.10 `.TRAN`; `XYC-REF` 2.1.1 `.AC`, 2.1.3 `.DC`,
+2.1.14 `.IC`, 2.1.22 `.NODESET`, 2.1.24 `.OP`, 2.1.38 `.TRAN`. Registry: [../../sources/README.md](../../sources/README.md).
 Everything marked **observed** was measured on ngspice 42 and Xyce 7.10 with
 the examples below (run with `tools/doctest.py`; see
 [../11-compat/matrix.md](../11-compat/matrix.md)) and is not stated, or is
@@ -28,7 +30,7 @@ An analysis solves the circuit equations of the flat netlist. Every analysis
 except `.tran ... uic` starts from a **DC operating point**; `.ac` linearizes
 the circuit around it.
 
-Element behavior at DC (`common`, `SP3-UG`, observed on both tools):
+Element behavior at DC (`common`, `SP3-UG` Elements, observed on both tools):
 
 - a capacitor is an open circuit;
 - an inductor is a short circuit (zero volts across it);
@@ -62,7 +64,7 @@ L1 c 0 1m
 The capacitor carries no current and the inductor has no voltage, so `R1`
 and `R2` form a 2 kohm divider that carries 2.5 mA. `i(v1)` is negative
 because SPICE defines a voltage source's current as flowing from its positive
-node *through the source* to its negative node (`SP3-UG`).
+node *through the source* to its negative node (`SP3-UG` Elements, "Independent Sources").
 
 **Floating nodes** (`dialect` agreed on the result, tools warn). A node whose
 only connections are capacitors has no DC path to ground and the DC equations
