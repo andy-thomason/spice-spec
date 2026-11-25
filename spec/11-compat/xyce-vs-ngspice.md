@@ -36,7 +36,7 @@ python3 tools/matrix.py ngspice=ngspice.json xyce=xyce.json > spec/11-compat/mat
 For Xyce the runner prints values with `.print ... format=csv` instead of
 ngspice's control language, appends `.op` when a deck has no analysis Xyce
 knows, and adds a step ceiling to `.tran` so interpolated checks are
-accurate. Of 147 examples, 21 do not apply to Xyce, 88 pass and 38 differ.
+accurate. Of 162 examples, 21 do not apply to Xyce, 102 pass and 39 differ.
 
 ## Numbers (examples TOK-NUM-*, LEX-NUM-*, LEX-SEP-*)
 

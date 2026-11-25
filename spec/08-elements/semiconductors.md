@@ -6,9 +6,11 @@ Capacitances, noise, breakdown, high-injection effects, temperature scaling
 and the many later MOSFET levels (BSIM and others) are **not** specified here.
 Card syntax is in [../../grammar/03-elements.md](../../grammar/03-elements.md).
 
-Sources: `SP3-UG` "Semiconductor devices" and the model parameter tables;
-`NGS-42` chapters on the diode, BJT and MOSFET models (chapter numbers not yet checked); `XYC-REF` chapter 2 (device cards) and the device
-model reference. Registry: [../../sources/README.md](../../sources/README.md).
+Sources: `SP3-UG` Elements page ("Junction Diodes", "Diode Model (D)",
+"Bipolar Junction Transistors", "BJT Models (NPN/PNP)", "MOSFETs", "MOSFET
+Models (NMOS/PMOS)"); `NGS-42` 7.1 to 7.3 (diode, model, equations), 8.1 and
+8.2 (BJT), 11.1 and 11.2.1 (MOSFET, MOS level 1); `XYC-REF` 2.3.8 (diode),
+2.3.17 (BJT), 2.3.20.1 (level 1 MOSFET). Registry: [../../sources/README.md](../../sources/README.md).
 The equations below are standard textbook device physics as the documents
 describe them, written in our own words. **Observed** means checked by the
 examples on ngspice 42 and Xyce 7.10. Examples are **non-normative**.
@@ -31,7 +33,7 @@ id = is * (exp(vd / (n vt)) - 1)        forward and weak reverse
 ```
 
 `is` defaults to 1e-14 A, `n` (emission coefficient) to 1, `rs` to 0
-(`common`, `SP3-UG`). The terminal voltage is `vd + id * rs`. A small
+(`common`; defaults from `SP3-UG` "Diode Model (D)" and `NGS-42` 7.2). The terminal voltage is `vd + id * rs`. A small
 conductance `gmin` (default 1e-12 S) is added across the junction by both
 tools to help convergence; it changes results by less than the examples'
 tolerance.
@@ -94,9 +96,12 @@ saturation   vds >= vgs - vt:       id = (beta / 2) * (vgs - vt)^2 * (1 + lambda
 ```
 
 `kp` defaults to 2e-5 A/V^2, `vto` to 0, `lambda` to 0 (`common`). The
-triode region's `(1 + lambda*vds)` factor is applied in SPICE for
-continuity of the current at the boundary (`SP3-UG`, `NGS-42` 11.2.1); the
-examples use `lambda = 0` and do not test it.
+documents name the model (Shichman-Hodges) and its parameters (`NGS-42`
+11.2.1; `SP3-UG` "MOSFET Models") but do not print the drain-current
+equations, so the formulas above are the standard textbook form and are
+**checked only where the examples test them**. The examples use
+`lambda = 0`; whether and how the `(1 + lambda*vds)` factor applies in the
+triode region is untested and open.
 
 ```spice-test id=EL-SEMI-M-1 covers=mosfet dialect=common
 Vg g 0 3

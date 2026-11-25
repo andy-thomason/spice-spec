@@ -159,7 +159,22 @@ To regenerate, see "Reproducing" in that file.
 | SEM-IC-4 | pass | **differs** | v(a) @ 1m = 3.89459402, expected 5 |
 | SEM-NS-1 | pass | pass (warns) | warning: Netlist warning: Voltage Node (B) connected to only 1 device Terminal / Netlist warning: Voltage Node (A) connected to only 1 device Terminal / Netlist |
 | SEM-NS-2 | pass | pass (warns) | warning: Netlist warning: Voltage Node (B) connected to only 1 device Terminal / Netlist warning: Voltage Node (A) connected to only 1 device Terminal / Netlist |
+| EL-LIN-R-1 | pass | pass |  |
+| EL-LIN-R-2 | pass | **differs** | v(a) = 1, expected 2 |
+| EL-LIN-C-1 | pass | pass |  |
+| EL-LIN-L-1 | pass | pass |  |
+| EL-LIN-K-1 | pass | pass |  |
+| EL-LIN-E-1 | pass | pass |  |
+| EL-LIN-G-1 | pass | pass |  |
+| EL-LIN-F-1 | pass | pass |  |
+| EL-LIN-H-1 | pass | pass (warns) | warning: Netlist warning: Voltage Node (OUT) connected to only 1 device Terminal |
+| EL-SEMI-D-1 | pass | pass |  |
+| EL-SEMI-D-2 | pass | pass |  |
+| EL-SEMI-Q-1 | pass | pass |  |
+| EL-SEMI-M-1 | pass | pass |  |
+| EL-SEMI-M-2 | pass | pass |  |
+| EL-SEMI-M-3 | pass | pass |  |
 
-ngspice: 147 pass
+ngspice: 162 pass
 
-xyce: 38 **differs**, 88 pass, 21 n/a
+xyce: 39 **differs**, 102 pass, 21 n/a
