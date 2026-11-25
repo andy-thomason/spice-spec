@@ -36,7 +36,7 @@ python3 tools/matrix.py ngspice=ngspice.json xyce=xyce.json > spec/11-compat/mat
 For Xyce the runner prints values with `.print ... format=csv` instead of
 ngspice's control language, appends `.op` when a deck has no analysis Xyce
 knows, and adds a step ceiling to `.tran` so interpolated checks are
-accurate. Of 182 examples, 21 do not apply to Xyce, 119 pass and 42 differ.
+accurate. Of 192 examples, 21 do not apply to Xyce, 129 pass and 42 differ.
 
 ## Numbers (examples TOK-NUM-*, LEX-NUM-*, LEX-SEP-*)
 
@@ -175,3 +175,11 @@ Depletion capacitance (BJT `cjc`, MOS `cbd`), MOS overlap capacitance and
 the diode's diffusion capacitance agree to better than 1e-3 on both tools,
 with one exception: Xyce 7.10 gives **no** diode diffusion capacitance in AC
 when `tt` is set but the junction capacitance is zero (EL-CAP-D-2, A-48).
+
+## Temperature (examples TMP-*)
+
+Both tools agree on `.options temp=` and `.options tnom=`, instance `temp=`
+and `dtemp=`, resistor `tc1`/`tc2`, the diode and BJT saturation-current
+law, and the level 1 MOSFET mobility and threshold shift (to about 2e-4).
+Only the **`.temp` card** differs (ngspice applies it, Xyce ignores it with a
+warning), so portable decks use `.options temp=`.
