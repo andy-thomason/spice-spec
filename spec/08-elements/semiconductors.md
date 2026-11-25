@@ -227,8 +227,7 @@ saturation current is `0.5 mA * (3 - 1.4189)^2 * 2 = 1.25 mA`.
 
 ## Not yet specified
 
-Diffusion capacitance and transit time, high-injection (`ik`) effects, the
-BJT's knee currents, junction capacitances, charge storage, `tox`-derived
-`kp`, MOSFET capacitances, noise and temperature scaling. Each needs its own page with
+High-injection (`ik`) effects, the BJT's knee currents, `tox`-derived `kp`,
+noise and temperature scaling. Capacitances are in [capacitances.md](capacitances.md). Each needs its own page with
 measured examples; the tools may differ in defaults (`XYC-REF` lists
 Xyce-specific parameters).

@@ -159,6 +159,11 @@ To regenerate, see "Reproducing" in that file.
 | SEM-IC-4 | pass | **differs** | v(a) @ 1m = 3.89459402, expected 5 |
 | SEM-NS-1 | pass | pass (warns) | warning: Netlist warning: Voltage Node (B) connected to only 1 device Terminal / Netlist warning: Voltage Node (A) connected to only 1 device Terminal / Netlist |
 | SEM-NS-2 | pass | pass (warns) | warning: Netlist warning: Voltage Node (B) connected to only 1 device Terminal / Netlist warning: Voltage Node (A) connected to only 1 device Terminal / Netlist |
+| EL-CAP-Q-1 | pass | pass |  |
+| EL-CAP-M-1 | pass | pass |  |
+| EL-CAP-D-1 | pass | pass |  |
+| EL-CAP-D-2 | pass | **differs** | real(v(a)) = 25.8640487, expected 12.9325 |
+| EL-CAP-M-2 | pass | pass |  |
 | EL-LIN-R-1 | pass | pass |  |
 | EL-LIN-R-2 | pass | **differs** | v(a) = 1, expected 2 |
 | EL-LIN-C-1 | pass | pass |  |
@@ -190,6 +195,6 @@ To regenerate, see "Reproducing" in that file.
 | LIB-SCALE-1 | pass | pass |  |
 | LIB-UNIT-1 | pass | pass |  |
 
-ngspice: 177 pass
+ngspice: 182 pass
 
-xyce: 41 **differs**, 115 pass, 21 n/a
+xyce: 42 **differs**, 119 pass, 21 n/a
