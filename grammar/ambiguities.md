@@ -50,6 +50,9 @@ unless marked.
 | A-42 | `.ic` with `.op` and element `ic=` without `uic`. ngspice ignores both. Xyce applies both. | Not portable; no defined effect. Section 2 and 6. |
 | A-43 | `.ac` point set when `FSTOP/FSTART` is not a whole number of decades or octaves. ngspice rescales `dec` spacing to end at `FSTOP`, not `oct`. Xyce keeps the nominal ratio. | Implementation-defined. Section 4. |
 | A-44 | Several analysis cards in one deck: order, and which results are kept. | Not yet measured. |
+| A-45 | `DC` keyword followed directly by a waveform (`V1 a 0 dc pulse(...)`). Both tools accept it. The source grammar requires a value after `DC`. | Evidence: `seen` in sky130 and gf180mcu, `measured` on ngspice and Xyce (LIB-DC-1). Grammar to be extended. |
+| A-46 | `.option scale=S`: which parameters it multiplies. Both tools scale MOS `w` and `l`; the rest is unmeasured. | `seen` in sky130 (165 uses); `measured` for `w`, `l` (LIB-SCALE-1). |
+| A-47 | Model binning (`name.N` with `lmin` `lmax` `wmin` `wmax`): which model kinds support it and the boundary rule. ngspice: BSIM3 and BSIM4 only (level 1 is an error). Xyce: picks `lmin <= l < lmax` even for level 1, with a warning. | `seen` in three libraries; `documented` (`NGS-42` 3.2.3); `measured` in part. No doctest runs on both. |
 
 ## Cross-tool items
 

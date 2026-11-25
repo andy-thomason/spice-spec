@@ -1,0 +1,125 @@
+{
+ "name": "sky130",
+ "extensions": [
+  ".spice",
+  ".lib",
+  ".pm",
+  ".ngspice",
+  ".inc",
+  ".sp",
+  ".cir",
+  ".mod"
+ ],
+ "max_bytes": 2000000,
+ "parsed": true,
+ "dot_cards": {
+  ".model": 6196,
+  ".include": 1996,
+  ".param": 1563,
+  ".subckt": 511,
+  ".ends": 511,
+  ".end": 385,
+  ".control": 348,
+  ".endc": 348,
+  ".lib": 294,
+  ".option": 165,
+  ".csparam": 72,
+  ".ac": 69,
+  ".endl": 9
+ },
+ "elements": {
+  "l": 1481,
+  "x": 1420,
+  "r": 1377,
+  "v": 865,
+  "d": 562,
+  "q": 354,
+  "c": 348,
+  "e": 348,
+  "p": 348,
+  "w": 268,
+  "m": 115,
+  "i": 70,
+  "o": 16,
+  "s": 1
+ },
+ "other_first": {
+  "#": 249
+ },
+ "number_tails": {
+  "u": 1808,
+  "v": 771,
+  "meg": 333,
+  "g": 3,
+  "p": 3
+ },
+ "expr_functions": {
+  "sqrt": 23041,
+  "abs": 53,
+  "min": 32,
+  "pow": 29,
+  "pwr": 13,
+  "max": 7,
+  "cosh": 6,
+  "tanh": 6,
+  "log": 5,
+  "floor": 1
+ },
+ "expr_operators": {
+  "?": 5,
+  "**": 1
+ },
+ "model_types": {
+  "pmos": 3350,
+  "nmos": 2749,
+  "c": 43,
+  "r": 26,
+  "d": 22,
+  "npn": 3,
+  "pnp": 3
+ },
+ "model_levels": {
+  "pmos:54.0": 3346,
+  "nmos:54.0": 2737,
+  "d:3.0": 22,
+  "nmos:49.0": 12,
+  "npn:1.0": 3,
+  "pnp:1.0": 3,
+  "pmos:49.0": 2,
+  "pmos:5.400000": 2
+ },
+ "lib_forms": {
+  "args=2": 285,
+  "args=1": 9
+ },
+ "param_value_start": {
+  "bare": 154457,
+  "quote": 14067,
+  "brace": 443
+ },
+ "option_names": {
+  "scale": 165,
+  "u": 2
+ },
+ "include_path_form": {
+  "quoted": 1996
+ },
+ "parse_codes": {
+  "warning:invalid-line": 2
+ },
+ "pass1_codes": {},
+ "scan_errors": {},
+ "files": 1232,
+ "bytes": 51094196,
+ "comment_star": 146746,
+ "continuation_lines": 1666236,
+ "logical_lines": 20289,
+ "files_parsed": 1232,
+ "quoted_or_braced_exprs": 81637,
+ "lines_with_tab": 62,
+ "binned_models": 6099,
+ "subckt_with_defaults": 20,
+ "eol_comment_dollar": 37,
+ "leading_whitespace_lines": 7,
+ "seconds": 240.0
+}

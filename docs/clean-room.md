@@ -108,3 +108,7 @@ been read or used. Findings: two sentences from the SPICE3 guide and one
 phrase from the ngspice manual had been quoted closely; they have been
 reworded. The remaining matches are parameter lists and keyword sequences
 (for example `PULSE(V1 V2 TD TR TF PW PER)`), which are interface facts.
+
+## Model libraries as evidence
+
+HSPICE-style syntax may be inferred from open model libraries under the rules in [hspice-corpus.md](hspice-corpus.md): open licence only, libraries kept outside the repository, only counts committed, no library text copied.

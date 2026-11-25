@@ -1,0 +1,115 @@
+{
+ "name": "ihp-sg13g2",
+ "extensions": [
+  ".spice",
+  ".lib",
+  ".pm",
+  ".ngspice",
+  ".inc",
+  ".sp",
+  ".cir",
+  ".mod"
+ ],
+ "max_bytes": 2000000,
+ "parsed": true,
+ "dot_cards": {
+  ".param": 1901,
+  ".include": 109,
+  ".if": 59,
+  ".else": 59,
+  ".endif": 59,
+  ".model": 55,
+  ".lib": 51,
+  ".endl": 51,
+  ".subckt": 50,
+  ".ends": 50,
+  ".params": 41
+ },
+ "elements": {
+  "n": 69,
+  "c": 42,
+  "r": 39,
+  "d": 30,
+  "l": 10,
+  "q": 8,
+  "x": 2
+ },
+ "other_first": {},
+ "number_tails": {
+  "u": 62,
+  "e10": 8,
+  "m": 6,
+  "e9": 6,
+  "n": 4,
+  "e3": 4,
+  "g": 2,
+  "e5": 2,
+  "p": 2,
+  "e4": 1
+ },
+ "expr_functions": {
+  "agauss": 188,
+  "max": 184,
+  "gauss": 129,
+  "sqrt": 124,
+  "log": 4,
+  "pow": 4,
+  "ln": 1
+ },
+ "expr_operators": {
+  "?": 192,
+  "!=": 182,
+  "!": 182,
+  "**": 116
+ },
+ "model_types": {
+  "d": 26,
+  "psp103va": 7,
+  "npn": 6,
+  "pspnqs103va": 5,
+  "r3_cmc": 3,
+  "c": 2,
+  "pnp": 2,
+  "mosvar": 2,
+  "cap_cmomf": 1,
+  "cap_cmomi": 1
+ },
+ "model_levels": {
+  "d:3": 13,
+  "d:1": 8,
+  "npn:9": 6,
+  "psp103va:103.60": 6,
+  "pspnqs103va:103.60": 4,
+  "mosvar:1000": 2,
+  "pnp:1": 1
+ },
+ "lib_forms": {
+  "args=1": 51
+ },
+ "param_value_start": {
+  "bare": 1848,
+  "quote": 260,
+  "brace": 20
+ },
+ "option_names": {},
+ "include_path_form": {
+  "bare": 96,
+  "quoted": 13
+ },
+ "parse_codes": {},
+ "pass1_codes": {},
+ "scan_errors": {},
+ "files": 38,
+ "bytes": 420337,
+ "comment_star": 1566,
+ "logical_lines": 2685,
+ "subckt_with_defaults": 20,
+ "quoted_or_braced_exprs": 1370,
+ "files_parsed": 38,
+ "leading_whitespace_lines": 1918,
+ "continuation_lines": 3161,
+ "eol_comment_semicolon": 9,
+ "files_not_utf8": 1,
+ "binned_models": 2,
+ "seconds": 0.6
+}
