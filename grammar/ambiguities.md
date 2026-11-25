@@ -53,6 +53,7 @@ unless marked.
 | A-45 | `DC` keyword followed directly by a waveform (`V1 a 0 dc pulse(...)`). Both tools accept it. The source grammar requires a value after `DC`. | Evidence: `seen` in sky130 and gf180mcu, `measured` on ngspice and Xyce (LIB-DC-1). Grammar to be extended. |
 | A-46 | `.option scale=S`: which parameters it multiplies. Both tools scale MOS `w` and `l`; the rest is unmeasured. | `seen` in sky130 (165 uses); `measured` for `w`, `l` (LIB-SCALE-1). |
 | A-47 | Model binning (`name.N` with `lmin` `lmax` `wmin` `wmax`): which model kinds support it and the boundary rule. ngspice: BSIM3 and BSIM4 only (level 1 is an error). Xyce: picks `lmin <= l < lmax` even for level 1, with a warning. | `seen` in three libraries; `documented` (`NGS-42` 3.2.3); `measured` in part. No doctest runs on both. |
+| A-48 | Diode diffusion capacitance (`tt`) with no junction capacitance. ngspice includes it. Xyce 7.10 gives none in AC unless `cj0` is non-zero. | `measured` (EL-CAP-D-1, EL-CAP-D-2); spec follows the documents, which give `C = tt * gd` unconditionally. |
 
 ## Cross-tool items
 
