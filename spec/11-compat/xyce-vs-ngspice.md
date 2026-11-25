@@ -36,7 +36,7 @@ python3 tools/matrix.py ngspice=ngspice.json xyce=xyce.json > spec/11-compat/mat
 For Xyce the runner prints values with `.print ... format=csv` instead of
 ngspice's control language, appends `.op` when a deck has no analysis Xyce
 knows, and adds a step ceiling to `.tran` so interpolated checks are
-accurate. Of 127 examples, 21 do not apply to Xyce, 71 pass and 35 differ.
+accurate. Of 147 examples, 21 do not apply to Xyce, 88 pass and 38 differ.
 
 ## Numbers (examples TOK-NUM-*, LEX-NUM-*, LEX-SEP-*)
 
@@ -159,3 +159,12 @@ spec page marks them as ngspice behavior.
    on both tools, `dialect=ngspice` (56) does not. An example Xyce accepts
    only by ignoring a card with a warning counts as `ngspice`. Retag after
    each matrix run.
+
+## Analyses (examples SEM-*)
+
+Measured with `spec/07-analyses/analyses.md`. Agreed: capacitor open and
+inductor short at DC, `.dc` point rules and nesting, `.ac` source magnitude
+and phase, `lin`/whole-decade point counts, `uic`, `.ic` without `.op`, and
+`.nodeset` on a latch. Different: `.ic` and element `ic=` with `.op` or
+without `uic` (Xyce applies them), wrong-sign `.dc` step, `.ac` points over a
+range that is not whole decades, and phase units (ngspice radians, Xyce degrees).
