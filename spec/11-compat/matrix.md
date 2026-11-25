@@ -191,10 +191,20 @@ To regenerate, see "Reproducing" in that file.
 | EL-SEMI-M-4 | pass | pass |  |
 | EL-SEMI-M-5 | pass | pass |  |
 | EL-SEMI-M-6 | pass | pass |  |
+| TMP-R-1 | pass | pass |  |
+| TMP-R-2 | pass | pass |  |
+| TMP-R-3 | pass | pass |  |
+| TMP-R-4 | pass | pass |  |
+| TMP-R-5 | pass | pass |  |
+| TMP-D-1 | pass | pass |  |
+| TMP-D-2 | pass | pass |  |
+| TMP-Q-1 | pass | pass |  |
+| TMP-M-1 | pass | pass |  |
+| TMP-M-2 | pass | pass |  |
 | LIB-DC-1 | pass | pass |  |
 | LIB-SCALE-1 | pass | pass |  |
 | LIB-UNIT-1 | pass | pass |  |
 
-ngspice: 182 pass
+ngspice: 192 pass
 
-xyce: 42 **differs**, 119 pass, 21 n/a
+xyce: 42 **differs**, 129 pass, 21 n/a
