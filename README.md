@@ -14,3 +14,7 @@ the first page is [spec/06-sources/waveforms.md](spec/06-sources/waveforms.md).
 
 This is a clean-room project: see [docs/clean-room.md](docs/clean-room.md) and
 [CONTRIBUTING.md](CONTRIBUTING.md). No simulator source code is read or copied.
+
+## Licence
+
+Spec text, grammar and conformance tests: CC BY 4.0 ([LICENSE-text.txt](LICENSE-text.txt)). Tools and reference implementation: Apache-2.0 ([LICENSE-code.txt](LICENSE-code.txt)). See [LICENSE](LICENSE).

@@ -24,3 +24,7 @@ Include this in your first pull request description:
 
 An AI assistant that helps write a change counts as a contributor: the
 human submitting it makes the declaration after checking the output.
+
+## Licence of contributions
+
+By contributing you agree that text, grammar, spec pages and tests are licensed under CC BY 4.0, and anything under `tools/` or `refimpl/` under Apache-2.0, as set out in [LICENSE](LICENSE).
