@@ -1,0 +1,54 @@
+{
+ "name": "asap7",
+ "extensions": [
+  ".spice",
+  ".lib",
+  ".pm",
+  ".ngspice",
+  ".inc",
+  ".sp",
+  ".cir",
+  ".mod"
+ ],
+ "max_bytes": 2000000,
+ "parsed": true,
+ "dot_cards": {
+  ".model": 48
+ },
+ "elements": {
+  "d": 3,
+  "s": 1
+ },
+ "other_first": {
+  "#": 39
+ },
+ "number_tails": {},
+ "expr_functions": {},
+ "expr_operators": {},
+ "model_types": {
+  "nmos": 24,
+  "pmos": 24
+ },
+ "model_levels": {
+  "nmos:72": 24,
+  "pmos:72": 24
+ },
+ "lib_forms": {},
+ "param_value_start": {},
+ "option_names": {},
+ "include_path_form": {},
+ "parse_codes": {
+  "warning:invalid-line": 4
+ },
+ "pass1_codes": {},
+ "scan_errors": {},
+ "files": 7,
+ "bytes": 251856,
+ "comment_star": 1428,
+ "continuation_lines": 1730,
+ "logical_lines": 91,
+ "files_parsed": 7,
+ "eol_comment_semicolon": 1,
+ "eol_comment_dollar": 4,
+ "seconds": 0.3
+}

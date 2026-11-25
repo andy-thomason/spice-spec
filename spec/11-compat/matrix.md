@@ -168,13 +168,28 @@ To regenerate, see "Reproducing" in that file.
 | EL-LIN-G-1 | pass | pass |  |
 | EL-LIN-F-1 | pass | pass |  |
 | EL-LIN-H-1 | pass | pass (warns) | warning: Netlist warning: Voltage Node (OUT) connected to only 1 device Terminal |
+| EL-OTH-J-1 | pass | pass |  |
+| EL-OTH-J-2 | pass | pass |  |
+| EL-OTH-S-1 | pass | **differs** | expected accept, got reject Netlist error in file deck.cir at or near line 4 / No model found for switch device S1 / Simulation aborted due to error.  There are |
+| EL-OTH-S-2 | pass | **differs** | expected accept, got reject Netlist error in file deck.cir at or near line 4 / No model found for switch device S1 / Simulation aborted due to error.  There are |
+| EL-OTH-T-1 | pass | pass |  |
+| EL-OTH-T-2 | pass | pass (warns) | warning: Netlist warning: Voltage Node (OUT) connected to only 1 device Terminal |
 | EL-SEMI-D-1 | pass | pass |  |
 | EL-SEMI-D-2 | pass | pass |  |
+| EL-SEMI-D-3 | pass | pass |  |
+| EL-SEMI-D-4 | pass | pass |  |
 | EL-SEMI-Q-1 | pass | pass |  |
+| EL-SEMI-Q-2 | pass | pass |  |
 | EL-SEMI-M-1 | pass | pass |  |
 | EL-SEMI-M-2 | pass | pass |  |
 | EL-SEMI-M-3 | pass | pass |  |
+| EL-SEMI-M-4 | pass | pass |  |
+| EL-SEMI-M-5 | pass | pass |  |
+| EL-SEMI-M-6 | pass | pass |  |
+| LIB-DC-1 | pass | pass |  |
+| LIB-SCALE-1 | pass | pass |  |
+| LIB-UNIT-1 | pass | pass |  |
 
-ngspice: 162 pass
+ngspice: 177 pass
 
-xyce: 39 **differs**, 102 pass, 21 n/a
+xyce: 41 **differs**, 115 pass, 21 n/a

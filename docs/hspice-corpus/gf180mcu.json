@@ -1,0 +1,147 @@
+{
+ "name": "gf180mcu",
+ "extensions": [
+  ".spice",
+  ".lib",
+  ".pm",
+  ".ngspice",
+  ".inc",
+  ".sp",
+  ".cir",
+  ".mod"
+ ],
+ "max_bytes": 2000000,
+ "parsed": true,
+ "dot_cards": {
+  ".param": 287,
+  ".model": 271,
+  ".lib": 255,
+  ".end": 112,
+  ".include": 111,
+  ".subckt": 96,
+  ".ends": 96,
+  ".options": 66,
+  ".temp": 64,
+  ".control": 61,
+  ".endc": 61,
+  ".endl": 59,
+  ".print": 54,
+  ".step": 46,
+  ".dc": 35,
+  ".meas": 29,
+  ".tran": 9,
+  ".ac": 6,
+  ".op": 6,
+  ".ic": 3,
+  ".measure": 3
+ },
+ "elements": {
+  "v": 214,
+  "x": 147,
+  "l": 117,
+  "m": 111,
+  "r": 108,
+  "s": 100,
+  "w": 84,
+  "d": 77,
+  "c": 58,
+  "p": 49,
+  "e": 42,
+  "o": 22,
+  "f": 21,
+  "a": 21,
+  "q": 10,
+  "i": 9,
+  "t": 8
+ },
+ "other_first": {
+  "{": 1
+ },
+ "number_tails": {
+  "p": 212,
+  "u": 180,
+  "g": 12,
+  "e4": 7,
+  "e3": 7,
+  "us": 6,
+  "e8": 5,
+  "m": 5,
+  "e17": 4,
+  "e5": 3,
+  "e20": 3,
+  "ns": 3,
+  "e19": 2,
+  "e16": 2,
+  "e6": 2,
+  "e7": 2,
+  "n": 1,
+  "e21": 1,
+  "e9": 1
+ },
+ "expr_functions": {
+  "abs": 110,
+  "sqrt": 27,
+  "tanh": 16,
+  "max": 12,
+  "n": 10,
+  "min": 4,
+  "pow": 2
+ },
+ "expr_operators": {
+  "==": 51,
+  "?": 30,
+  "**": 2,
+  "||": 2,
+  "<=": 2
+ },
+ "model_types": {
+  "nmos": 101,
+  "pmos": 99,
+  "d": 29,
+  "r": 23,
+  "c": 9,
+  "npn": 6,
+  "pnp": 4
+ },
+ "model_levels": {
+  "nmos:54": 101,
+  "pmos:54": 99,
+  "d:3": 29,
+  "npn:1": 6,
+  "pnp:1": 4
+ },
+ "lib_forms": {
+  "args=2": 196,
+  "args=1": 59
+ },
+ "param_value_start": {
+  "bare": 953,
+  "quote": 333
+ },
+ "option_names": {
+  "tnom": 64,
+  "noacct": 2
+ },
+ "include_path_form": {
+  "quoted": 111
+ },
+ "parse_codes": {
+  "warning:invalid-line": 31
+ },
+ "pass1_codes": {},
+ "scan_errors": {},
+ "files": 115,
+ "bytes": 1495608,
+ "comment_star": 2652,
+ "continuation_lines": 45736,
+ "logical_lines": 2929,
+ "files_parsed": 115,
+ "lines_with_tab": 97,
+ "leading_whitespace_lines": 733,
+ "quoted_or_braced_exprs": 1930,
+ "subckt_with_defaults": 81,
+ "binned_models": 200,
+ "eol_comment_dollar": 22,
+ "files_without_final_newline": 32,
+ "seconds": 4.0
+}
