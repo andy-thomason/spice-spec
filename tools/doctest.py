@@ -34,6 +34,12 @@ def spice_number(s):
     return v
 
 
+def split_points(expr):
+    """`points(EXPR)` asks for the number of rows; returns (EXPR, True)."""
+    m = re.fullmatch(r"points\((.*)\)", expr.strip())
+    return (m.group(1).strip(), True) if m else (expr, False)
+
+
 def at_time(rows, t):
     """Value at time t from (time, value) rows, linear between points."""
     for k, (t1, v1) in enumerate(rows):
@@ -128,7 +134,7 @@ def build(t):
         out.append(".control")
         out.append("run")
         for k, (expr, _, _) in enumerate(checks):
-            out.append("wrdata out%d.dat %s" % (k, expr.split("@")[0].strip()))
+            out.append("wrdata out%d.dat %s" % (k, split_points(expr)[0].split("@")[0].strip()))
         out.append(".endc")
     out.append(".end")
     return "\n".join(out) + "\n", checks
@@ -136,12 +142,12 @@ def build(t):
 
 def xyce_expr(expr):
     """Translate a check expression to Xyce's print syntax, or None."""
-    e = expr.split("@")[0].strip()
+    e = split_points(expr)[0].split("@")[0].strip()
     if re.fullmatch(r"[vi]\([^()]*\)", e, re.I):
         return e
-    m = re.fullmatch(r"mag\(\s*v\(([^()]*)\)\s*\)", e, re.I)
+    m = re.fullmatch(r"(mag|real|imag|db)\(\s*v\(([^()]*)\)\s*\)", e, re.I)
     if m:
-        return "VM(%s)" % m.group(1)
+        return "%s(%s)" % ({"mag": "VM", "real": "VR", "imag": "VI", "db": "VDB"}[m.group(1).lower()], m.group(2))
     return None
 
 
@@ -224,7 +230,9 @@ def run_xyce(t, cmd):
             col = head.index(m.upper()) if m.upper() in head else None
             if col is None:
                 return "FAIL", "no column %s in %s" % (m, head)
-            if "@" in expr:
+            if split_points(expr)[1]:
+                v = len(data)
+            elif "@" in expr:
                 try:
                     v = at_time([(r[0], r[col]) for r in data], spice_number(expr.split("@")[1].strip()))
                 except ValueError as ex:
@@ -308,7 +316,9 @@ def run_one(t, ngspice, codemodels=None):
             if not os.path.exists(f):
                 return "FAIL", "no output for " + expr
             lines = open(f).read().strip().splitlines()
-            if "@" in expr:
+            if split_points(expr)[1]:
+                v = len(lines)
+            elif "@" in expr:
                 rows = [(float(r.split()[0]), float(r.split()[-1])) for r in lines]
                 try:
                     v = at_time(rows, spice_number(expr.split("@")[1].strip()))

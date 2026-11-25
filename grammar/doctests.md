@@ -44,6 +44,8 @@ analysis, `* expect: v(a) @ 1.5u = 0.5` checks the value at that time, by
 linear interpolation between the printed points (the time can use SPICE
 suffixes). Without `@`, the last point is checked.
 
+`* expect: points(EXPR) = N` checks that the analysis produced N points (rows). For AC and DC examples, `@` takes the sweep value (frequency or source value) instead of a time.
+
 A block with language `spice-file name=FILE` supplies an auxiliary file for
 `.include` and `.lib` examples.
 

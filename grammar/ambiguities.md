@@ -46,6 +46,10 @@ unless marked.
 | A-38 | `.lib` sections that call each other; `.include` inside a subcircuit. | Test |
 | A-39 | Where the documents differ from measured source behavior: `SIN` before its delay, the `AM` formula and `fc` default, `np` on `PULSE` (spec/06-sources/waveforms.md). | Tests on other tools |
 | A-40 | A zero `tr`/`tf` on `PULSE` is replaced by `tstep`: the print step or an internal limit. | Test with a different `tmax` |
+| A-41 | `.dc` step with the wrong sign for the range. ngspice: no points. Xyce: warning, one point. | Spec treats as an error. `spec/07-analyses/analyses.md` section 3. |
+| A-42 | `.ic` with `.op` and element `ic=` without `uic`. ngspice ignores both. Xyce applies both. | Not portable; no defined effect. Section 2 and 6. |
+| A-43 | `.ac` point set when `FSTOP/FSTART` is not a whole number of decades or octaves. ngspice rescales `dec` spacing to end at `FSTOP`, not `oct`. Xyce keeps the nominal ratio. | Implementation-defined. Section 4. |
+| A-44 | Several analysis cards in one deck: order, and which results are kept. | Not yet measured. |
 
 ## Cross-tool items
 
