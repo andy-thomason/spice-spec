@@ -15,7 +15,7 @@ All examples are original and written for this project (see
 An example is a fenced block with the language `spice-test`:
 
 ````
-```spice-test id=EL-R-1 covers=resistor,r-simple dialect=ngspice
+```spice-test id=EL-R-1 covers=resistor,r-simple dialect=common
 I1 0 a 1m
 R1 a 0 1k
 * expect: v(a) = 1
@@ -28,7 +28,7 @@ Attributes on the opening line:
 |-----------|---------|
 | `id` | Unique ID. |
 | `covers` | Comma list of grammar rule names the example exercises. |
-| `dialect` | Where it is expected to work (`ngspice`, or omitted for tools in general). Informative. |
+| `dialect` | `common`: passes on both ngspice 42 and Xyce 7.10. `ngspice`: passes on ngspice 42 only. Set from [the matrix](../spec/11-compat/matrix.md) and informative. |
 | `expect` | `accept` (default), `warn` (runs but the tool warns and ignores something), or `reject` (the tool reports an error). |
 | `deck` | `cards` (default): the runner adds a title line, `.end`, and `.op` if there is no analysis card. `full`: the block is a whole deck ending in `.end`. |
 | `uses` | Comma list of `spice-file` blocks in the same document to write next to the deck. |

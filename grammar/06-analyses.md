@@ -55,7 +55,7 @@ the example is a bug to investigate. Examples run as doctests on ngspice
 
 Operating point.
 
-```spice-test id=AN-OP-1 covers=op-card
+```spice-test id=AN-OP-1 covers=op-card dialect=common
 V1 a 0 1
 R1 a 0 1k
 .op
@@ -64,7 +64,7 @@ R1 a 0 1k
 
 DC sweep; the last point is checked.
 
-```spice-test id=AN-DC-1 covers=dc-card
+```spice-test id=AN-DC-1 covers=dc-card dialect=common
 V1 a 0 0
 R1 a 0 1k
 .dc V1 1 2 1
@@ -73,7 +73,7 @@ R1 a 0 1k
 
 AC analysis at one frequency: RC low-pass at its corner is -3 dB (magnitude 0.7071).
 
-```spice-test id=AN-AC-1 covers=ac-card
+```spice-test id=AN-AC-1 covers=ac-card dialect=common
 Vin a 0 ac 1
 R1 a b 1k
 C1 b 0 159.155n
@@ -83,7 +83,7 @@ C1 b 0 159.155n
 
 Transient with `uic`: the capacitor starts at its `ic` value.
 
-```spice-test id=AN-TRAN-1 covers=tran-card
+```spice-test id=AN-TRAN-1 covers=tran-card dialect=common
 V1 a 0 0
 R1 a b 1k
 C1 b 0 1u ic=2
@@ -93,7 +93,7 @@ C1 b 0 1u ic=2
 
 A noise analysis runs; no value is asserted.
 
-```spice-test id=AN-NOISE-1 covers=noise-card dialect=ngspice
+```spice-test id=AN-NOISE-1 covers=noise-card dialect=common
 Vin a 0 dc 0 ac 1
 R1 a b 1k
 R2 b 0 1k
@@ -102,7 +102,7 @@ R2 b 0 1k
 
 Transfer function runs; no value is asserted.
 
-```spice-test id=AN-TF-1 covers=tf-card
+```spice-test id=AN-TF-1 covers=tf-card dialect=ngspice
 V1 a 0 1
 R1 a b 1k
 R2 b 0 1k
@@ -111,7 +111,7 @@ R2 b 0 1k
 
 Pole-zero analysis of an RC low-pass; accepted. The input node must not be driven by an ideal voltage source, which would short the input.
 
-```spice-test id=AN-PZ-1 covers=pz-card
+```spice-test id=AN-PZ-1 covers=pz-card dialect=ngspice
 R0 a 0 1k
 R1 a b 1k
 C1 b 0 1u
@@ -150,7 +150,7 @@ D1 b 0 dm
 
 `.ic` sets the starting node voltage for a transient started with `uic`: 2*exp(-1) after one time constant.
 
-```spice-test id=AN-IC-1 covers=ic-card
+```spice-test id=AN-IC-1 covers=ic-card dialect=common
 R1 a 0 1k
 C1 a 0 1u
 .ic v(a)=2
@@ -160,7 +160,7 @@ C1 a 0 1u
 
 `.nodeset` is only a starting guess; the answer is unchanged.
 
-```spice-test id=AN-NODESET-1 covers=nodeset-card
+```spice-test id=AN-NODESET-1 covers=nodeset-card dialect=common
 V1 a 0 1
 R1 a 0 1k
 .nodeset v(a)=5
@@ -169,7 +169,7 @@ R1 a 0 1k
 
 An option, with `name=value` form.
 
-```spice-test id=AN-OPTIONS-1 covers=options-card
+```spice-test id=AN-OPTIONS-1 covers=options-card dialect=ngspice
 V1 a 0 1
 R1 a 0 1k
 .options reltol=1e-4
