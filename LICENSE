@@ -1,0 +1,16 @@
+This repository has two licences, by directory.
+
+Text, grammar, specification pages, examples and conformance tests
+(README.md, CONTRIBUTING.md, docs/, grammar/, spec/, sources/, conformance/):
+  Creative Commons Attribution 4.0 International (CC BY 4.0).
+  Full text: LICENSE-text.txt
+
+Software (tools/, refimpl/):
+  Apache License, Version 2.0.
+  Full text: LICENSE-code.txt
+
+Copyright 2026 Andy Thomason and contributors.
+
+SPICE, HSPICE, ngspice and Xyce are names of other projects and products.
+Nothing here is copied from their source code or manuals (see
+docs/clean-room.md), and this repository is not affiliated with them.
