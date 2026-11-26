@@ -55,6 +55,7 @@ unless marked.
 | A-47 | Model binning (`name.N` with `lmin` `lmax` `wmin` `wmax`): which model kinds support it and the boundary rule. ngspice: BSIM3 and BSIM4 only (level 1 is an error). Xyce: picks `lmin <= l < lmax` even for level 1, with a warning. | `seen` in three libraries; `documented` (`NGS-42` 3.2.3); `measured` in part. No doctest runs on both. |
 | A-48 | Diode diffusion capacitance (`tt`) with no junction capacitance. ngspice includes it. Xyce 7.10 gives none in AC unless `cj0` is non-zero. | `measured` (EL-CAP-D-1, EL-CAP-D-2); spec follows the documents, which give `C = tt * gd` unconditionally. |
 | A-49 | Level 1 MOSFET temperature behavior with `gamma` not 0, and the forms of `kp(T)` and `vto(T)` that the documents do not print. Fitted to measurements at `gamma = 0` only. | `measured` (TMP-M-1, TMP-M-2). |
+| A-50 | Level 1 MOS Meyer gate capacitance between accumulation and threshold, and the individual `Cgs`, `Cgd`, `Cgb` values (only their sum is measured). | `measured` (EL-CAP-M-3 to M-6); formulas are the standard Meyer model, not printed in the documents. |
 
 ## Cross-tool items
 

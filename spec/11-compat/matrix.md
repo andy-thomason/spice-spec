@@ -164,6 +164,11 @@ To regenerate, see "Reproducing" in that file.
 | EL-CAP-D-1 | pass | pass |  |
 | EL-CAP-D-2 | pass | **differs** | real(v(a)) = 25.8640487, expected 12.9325 |
 | EL-CAP-M-2 | pass | pass |  |
+| EL-CAP-M-3 | pass | pass |  |
+| EL-CAP-M-4 | pass | pass |  |
+| EL-CAP-M-5 | pass | pass |  |
+| EL-CAP-M-6 | pass | pass |  |
+| EL-CAP-Q-2 | pass | pass |  |
 | EL-LIN-R-1 | pass | pass |  |
 | EL-LIN-R-2 | pass | **differs** | v(a) = 1, expected 2 |
 | EL-LIN-C-1 | pass | pass |  |
@@ -205,6 +210,6 @@ To regenerate, see "Reproducing" in that file.
 | LIB-SCALE-1 | pass | pass |  |
 | LIB-UNIT-1 | pass | pass |  |
 
-ngspice: 192 pass
+ngspice: 197 pass
 
-xyce: 42 **differs**, 129 pass, 21 n/a
+xyce: 42 **differs**, 134 pass, 21 n/a
