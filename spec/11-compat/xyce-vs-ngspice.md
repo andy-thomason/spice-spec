@@ -36,7 +36,7 @@ python3 tools/matrix.py ngspice=ngspice.json xyce=xyce.json > spec/11-compat/mat
 For Xyce the runner prints values with `.print ... format=csv` instead of
 ngspice's control language, appends `.op` when a deck has no analysis Xyce
 knows, and adds a step ceiling to `.tran` so interpolated checks are
-accurate. Of 197 examples, 21 do not apply to Xyce, 134 pass and 42 differ.
+accurate. Of 203 examples, 21 do not apply to Xyce, 140 pass and 42 differ.
 
 ## Numbers (examples TOK-NUM-*, LEX-NUM-*, LEX-SEP-*)
 
@@ -184,3 +184,10 @@ and `dtemp=`, resistor `tc1`/`tc2`, the diode and BJT saturation-current
 law, and the level 1 MOSFET mobility and threshold shift (to about 2e-4).
 Only the **`.temp` card** differs (ngspice applies it, Xyce ignores it with a
 warning), so portable decks use `.options temp=`.
+
+## Model binning (examples BIN-*)
+
+BSIM4 binning agrees: the card is picked by `lmin <= L < lmax` and
+`wmin <= W < wmax`, a deck with no matching card is rejected, and the
+currents match to 1e-5. Level 1 binning still differs (ngspice rejects it,
+Xyce bins with warnings; A-47).

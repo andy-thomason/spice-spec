@@ -70,5 +70,6 @@ documents say the simulator picks the variant by the instance's `w` and `l`
 | Level 1 device with binned models | **error**: "could not find a valid modelname" (the manual says binning is implemented for BSIM3 and BSIM4 only) | selects a bin; warns that `lmin`, `lmax`, `wmin`, `wmax` are not model parameters of the level |
 | Choice at the boundary `l = lmax(bin 1) = lmin(bin 2)` | not measured | the **upper** bin (`lmin <= l < lmax`) |
 
-An example cannot be run on both, so there is no doctest. A BSIM4 example is a
-follow-up.
+A level 1 example cannot be run on both, so there is no doctest for it. The
+BSIM4 case, where both tools agree, is specified with doctests in
+[../08-elements/binning.md](../08-elements/binning.md).

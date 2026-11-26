@@ -159,6 +159,12 @@ To regenerate, see "Reproducing" in that file.
 | SEM-IC-4 | pass | **differs** | v(a) @ 1m = 3.89459402, expected 5 |
 | SEM-NS-1 | pass | pass (warns) | warning: Netlist warning: Voltage Node (B) connected to only 1 device Terminal / Netlist warning: Voltage Node (A) connected to only 1 device Terminal / Netlist |
 | SEM-NS-2 | pass | pass (warns) | warning: Netlist warning: Voltage Node (B) connected to only 1 device Terminal / Netlist warning: Voltage Node (A) connected to only 1 device Terminal / Netlist |
+| BIN-1 | pass | pass (warns) | warning: Netlist warning in file deck.cir at or near line 5 / Netlist warning in file deck.cir at or near line 5 |
+| BIN-2 | pass | pass (warns) | warning: Netlist warning in file deck.cir at or near line 6 / Netlist warning in file deck.cir at or near line 6 |
+| BIN-3 | pass | pass (warns) | warning: Netlist warning in file deck.cir at or near line 6 / Netlist warning in file deck.cir at or near line 6 |
+| BIN-4 | pass | pass (warns) | warning: Netlist warning in file deck.cir at or near line 7 / Netlist warning in file deck.cir at or near line 7 |
+| BIN-6 | pass | pass (warns) | warning: Netlist warning in file deck.cir at or near line 7 / Netlist warning in file deck.cir at or near line 7 |
+| BIN-5 | pass | pass |  |
 | EL-CAP-Q-1 | pass | pass |  |
 | EL-CAP-M-1 | pass | pass |  |
 | EL-CAP-D-1 | pass | pass |  |
@@ -210,6 +216,6 @@ To regenerate, see "Reproducing" in that file.
 | LIB-SCALE-1 | pass | pass |  |
 | LIB-UNIT-1 | pass | pass |  |
 
-ngspice: 197 pass
+ngspice: 203 pass
 
-xyce: 42 **differs**, 134 pass, 21 n/a
+xyce: 42 **differs**, 140 pass, 21 n/a
