@@ -1,9 +1,9 @@
 # Device capacitances
 
 Status: draft v0.1. The charge-storage parts of the diode, BJT and MOSFET
-level 1 models that can be checked from outside: diffusion capacitance,
-depletion (junction) capacitance, and the MOS overlap and junction
-capacitances. Formulas come from the documents, in our own words; every
+level 1 models that can be checked from outside: diffusion capacitance and
+BJT transit time, depletion (junction) capacitance, the MOS overlap and
+junction capacitances, and the MOS gate (Meyer) capacitance. Formulas come from the documents, in our own words; every
 number below was checked by an example on ngspice 42 and Xyce 7.10.
 Examples are **non-normative**.
 
@@ -127,13 +127,114 @@ M1 0 g 0 0 nm w=10u l=1u
 The gate is the only node, with source, drain and bulk grounded, so
 `C = (cgso + cgdo) * w = 2e-7 * 10e-6 = 2 pF`.
 
+## MOS gate capacitance, level 1 (Meyer) (`common`)
+
+The level 1 MOSFET has a voltage-dependent gate capacitance only if the model
+gives `tox` (`NGS-42` 11.2). It is the piecewise model of Meyer: the total
+oxide capacitance
+
+```
+Cox = eps_ox * w * l / tox          eps_ox = 3.9 * 8.854214871e-12 F/m
+```
+
+is shared between the gate and the source, drain and bulk, depending on the
+region. With `vgst = vgs - vt`, and `vt` the threshold:
+
+| Region | Cgs | Cgd | Cgb |
+|--------|-----|-----|-----|
+| accumulation (`vgs` well below `vt - phi`) | 0 | 0 | `Cox` |
+| saturation (`vds >= vgst`) | `2/3 Cox` | 0 | 0 |
+| triode (`vds < vgst`) | `2/3 Cox (1 - ((vgst - vds)/(2 vgst - vds))^2)` | `2/3 Cox (1 - (vgst/(2 vgst - vds))^2)` | 0 |
+
+The overlap capacitances of the previous section are added. The partial
+region between accumulation and threshold (`vt - phi < vgs < vt`) is not
+specified here (A-50). Each example measures the **total** gate capacitance
+(`Cgs + Cgd + Cgb`), because the gate is the node where the AC divider can be
+attached. The device is `w=100u`, `l=10u`, `tox=10 nm`, so `Cox = 3.453 pF`;
+the check value is the divider gain at 100 kHz with 1 Mohm.
+
+```spice-test id=EL-CAP-M-3 covers=mosfet dialect=common
+V1 s 0 DC 3 AC 1
+R1 s g 1Meg
+Vd d 0 5
+M1 d g 0 0 nm w=100u l=10u
+.model nm NMOS(level=1 vto=1 kp=1e-4 lambda=0 phi=0.6 tox=1e-8)
+.ac lin 1 100k 100k
+* expect: mag(v(g)) = 0.56868 tol=1e-3
+```
+
+Saturation: the gate sees `Cgs = 2/3 Cox = 2.302 pF`.
+
+```spice-test id=EL-CAP-M-4 dialect=common
+V1 s 0 DC 3 AC 1
+R1 s g 1Meg
+M1 0 g 0 0 nm w=100u l=10u
+.model nm NMOS(level=1 vto=1 kp=1e-4 lambda=0 phi=0.6 tox=1e-8)
+.ac lin 1 100k 100k
+* expect: mag(v(g)) = 0.41858 tol=1e-3
+```
+
+Triode with `vds = 0`: `Cgs = Cgd = Cox / 2`, total `Cox`.
+
+```spice-test id=EL-CAP-M-5 dialect=common
+V1 s 0 DC 3 AC 1
+R1 s g 1Meg
+Vd d 0 0.5
+M1 d g 0 0 nm w=100u l=10u
+.model nm NMOS(level=1 vto=1 kp=1e-4 lambda=0 phi=0.6 tox=1e-8)
+.ac lin 1 100k 100k
+* expect: mag(v(g)) = 0.42094 tol=1e-3
+```
+
+Triode with `vds = 0.5`, `vgst = 2`: `Cgs = 0.5442 Cox`, `Cgd = 0.4490 Cox`,
+total `0.9932 Cox`.
+
+```spice-test id=EL-CAP-M-6 dialect=common
+V1 s 0 DC -2 AC 1
+R1 s g 1Meg
+Vd d 0 0
+M1 d g 0 0 nm w=100u l=10u
+.model nm NMOS(level=1 vto=1 kp=1e-4 lambda=0 phi=0.6 tox=1e-8)
+.ac lin 1 100k 100k
+* expect: mag(v(g)) = 0.41858 tol=1e-3
+```
+
+Accumulation (`vgs = -2`): the whole `Cox` is gate-to-bulk.
+
+Both tools matched these formulas to better than 1e-6 (the table is the
+standard Meyer model; the documents name it but print no equations, so the
+region values here are `measured`).
+
+## BJT forward transit time (`common`)
+
+In forward active operation the base-emitter junction also stores diffusion
+charge `tf * ic`, which is a capacitance `Cpi = tf * gm` in parallel with
+`gpi = gm / bf`, where `gm = ic / vt` (`NGS-42` 8.2; bias-dependent `tf`, via
+`xtf`, `vtf`, `itf`, is not tested). The example drives the base with a
+10 uA current (so `ic = bf * 10 uA = 1 mA`, `gm = 0.03866 S`) and reads the
+base voltage at the frequency where `2 pi f Cpi = gpi`.
+
+```spice-test id=EL-CAP-Q-2 covers=bjt dialect=common
+I1 0 b DC 10u AC 1
+Vc c 0 5
+Q1 c b 0 qm
+.model qm NPN(is=1e-15 bf=100 tf=1n)
+.ac lin 1 1.5915494e6 1.5915494e6
+* expect: real(v(b)) = 1293.25 tol=1e-3
+* expect: imag(v(b)) = -1293.25 tol=1e-3
+```
+
+`Cpi = 1n * 0.03866 = 38.66 pF` and `gpi = 0.3866 mS`, so the input impedance
+is `(1 - j) / (2 gpi)` at 1.5915 MHz.
+
 ## Not yet specified
 
-- **Meyer gate capacitance.** The documents say the voltage-dependent
-  thin-oxide capacitance of the level 1 MOSFET is included only if `tox` is
-  given. The shape (cutoff, triode, saturation) is not tested here.
-- **BJT** `tf` and its bias dependence (`xtf`, `vtf`, `itf`), `xcjc`, substrate
-  capacitance, and the forward-bias linear extension (`fc`).
+- **Meyer gate capacitance** in the depletion region
+  (`vt - phi < vgs < vt`), the split of the total between `Cgs`, `Cgd`
+  and `Cgb`, and `tox` handling of other MOS levels (A-50).
+- **BJT** bias dependence of `tf` (`xtf`, `vtf`, `itf`), reverse transit time
+  `tr`, `xcjc`, substrate capacitance, and the forward-bias linear extension
+  (`fc`).
 - **Diode and MOS** forward-bias extension, sidewall (`cjsw`, `pj`, `cjp`)
   and area scaling, and the temperature dependence of capacitances.
 - **JFET** `cgs` and `cgd`.
